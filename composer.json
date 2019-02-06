@@ -1,0 +1,14 @@
+{
+    "autoload": {
+        "classmap": [
+            "app"
+        ],
+        "files": [
+            "app/helpers/common.php",
+            "app/helpers/db.php"
+        ],
+        "psr-4": {
+            "GOP\\Inventory\\": "app/"
+        }
+    }
+}
