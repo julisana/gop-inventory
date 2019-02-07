@@ -146,7 +146,7 @@ class DB
      */
     public function where( $where = [] )
     {
-        if ( empty( $where ) || !is_array( $where ) ) {
+        if ( !is_array( $where ) ) {
             return $this;
         }
 
@@ -162,7 +162,7 @@ class DB
      */
     public function start( $start = '' )
     {
-        if ( !is_numeric( $start ) || empty( $start ) ) {
+        if ( !is_numeric( $start ) ) {
             return $this;
         }
 
@@ -178,7 +178,7 @@ class DB
      */
     public function limit( $limit = '' )
     {
-        if ( !is_numeric( $limit ) || empty( $limit ) ) {
+        if ( !is_numeric( $limit ) ) {
             return $this;
         }
 
@@ -194,10 +194,6 @@ class DB
      */
     public function orderBy( $orderBy = '' )
     {
-        if ( empty( $orderBy ) ) {
-            return $this;
-        }
-
         $this->orderBy = $orderBy;
 
         return $this;
@@ -234,11 +230,9 @@ class DB
     {
         try {
             $query = $this->connection->prepare( $statement );
-            $this->previousQuery = $this->connection->prepare( $statement );
 
             foreach ( $options as $key => $value ) {
                 $query->bindParam( $key, $value );
-                $this->previousQuery->bindParam( $key, $value, PDO::PARAM_STR );
             }
 
             if ( $query->execute() ) {

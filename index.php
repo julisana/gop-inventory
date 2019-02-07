@@ -6,7 +6,7 @@ use GOP\Inventory\DB;
 
 $db = new DB();
 
-$years = $db->table( 'inventory' )->fields( [ 'distinct year' ] )->select();
+$years = get_existing_years( $db );
 
 ?>
 
@@ -47,7 +47,7 @@ $years = $db->table( 'inventory' )->fields( [ 'distinct year' ] )->select();
                                 <?php if ( !empty( $years ) ) { ?>
                                     <ul>
                                         <?php foreach ( $years as $year ) {
-                                            echo '<li><a href="add.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
+                                            echo '<li><a href="add.php?year=' . $year[ 'year' ] . '">Previous Year: ' . $year[ 'year' ] . '</a></li>';
                                         } ?>
                                     </ul>
                                 <?php } ?>

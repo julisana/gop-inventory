@@ -10,6 +10,8 @@ use GOP\Inventory\DB;
 
 if ( !function_exists( 'get_keyers' ) ) {
     /**
+     * Get a list of keyers from the database for the specified year.
+     *
      * @param string $year
      * @param DB|string $db
      *
@@ -22,7 +24,10 @@ if ( !function_exists( 'get_keyers' ) ) {
         }
 
         $keyers = [];
-        $results = $db->table( 'keyer' )->fields( [ 'id', 'name' ] )->where( [ 'year' => $year ] )->select();
+        $results = $db->table( 'keyer' )
+            ->fields( [ 'id', 'name' ] )
+            ->where( [ 'year' => $year ] )
+            ->select();
 
         foreach ( $results as $result ) {
             $keyers[ $result[ 'id' ] ] = $result[ 'name' ];
@@ -34,6 +39,8 @@ if ( !function_exists( 'get_keyers' ) ) {
 
 if ( !function_exists( 'get_manufacturers' ) ) {
     /**
+     * Get a list of manufacturers from the database for the specified year.
+     *
      * @param string $year
      * @param DB|string $db
      *
@@ -46,7 +53,10 @@ if ( !function_exists( 'get_manufacturers' ) ) {
         }
 
         $manufacturers = [];
-        $results = $db->table( 'manufacturer' )->fields( [ 'id', 'name' ] )->where( [ 'year' => $year ] )->select();
+        $results = $db->table( 'manufacturer' )
+            ->fields( [ 'id', 'name' ] )
+            ->where( [ 'year' => $year ] )
+            ->select();
 
         foreach ( $results as $result ) {
             $manufacturers[ $result[ 'id' ] ] = $result[ 'name' ];
@@ -58,6 +68,8 @@ if ( !function_exists( 'get_manufacturers' ) ) {
 
 if ( !function_exists( 'get_existing_years' ) ) {
     /**
+     * Get a list of existing years from the database.
+     *
      * @param DB|string $db
      *
      * @return array
@@ -69,7 +81,9 @@ if ( !function_exists( 'get_existing_years' ) ) {
         }
 
         $years = [];
-        $results = $db->table( 'inventory' )->fields( [ 'distinct year' ] )->select();
+        $results = $db->table( 'inventory' )
+            ->fields( [ 'distinct year' ] )
+            ->select();
 
         foreach ( $results as $result ) {
             $years[] = $result[ 'year' ];
@@ -79,9 +93,36 @@ if ( !function_exists( 'get_existing_years' ) ) {
     }
 }
 
+if ( !function_exists( 'get_pages' ) ) {
+    /**
+     * Get a list of pages from the database for the specified year.
+     *
+     * @param string $year
+     * @param string $db
+     *
+     * @return array
+     */
+    function get_pages( $year, $db = '' )
+    {
+        if ( !$db instanceof DB ) {
+            $db = new DB();
+        }
+
+        $pages = $db->table( 'inventory' )
+            ->fields( [ 'distinct page', 'keyer' ] )
+            ->where( [ 'year' => $year ] )
+            ->orderBy( 'page asc' )
+            ->select();
+
+        return $pages;
+    }
+}
+
 if ( !function_exists( 'start_year' ) ) {
     /**
-     * @param        $year
+     * Start a new year by copying the data from the previous year.
+     *
+     * @param string $year
      * @param string $db
      *
      * @return bool
@@ -101,8 +142,14 @@ if ( !function_exists( 'start_year' ) ) {
 
         try {
             $previousYear = $year - 1;
-            $manufacturers = $db->table( 'manufacturer' )->fields( [ 'code', 'name' ] )->where( [ 'year' => $previousYear ] )->select();
-            $keyers = $db->table( 'keyer' )->fields( [ 'code', 'name' ] )->where( [ 'year' => $previousYear ] )->select();
+            $manufacturers = $db->table( 'manufacturer' )
+                ->fields( [ 'code', 'name' ] )
+                ->where( [ 'year' => $previousYear ] )
+                ->select();
+            $keyers = $db->table( 'keyer' )
+                ->fields( [ 'code', 'name' ] )
+                ->where( [ 'year' => $previousYear ] )
+                ->select();
 
             foreach ( $manufacturers as $manufacturer ) {
                 $manufacturer[ 'year' ] = $year;

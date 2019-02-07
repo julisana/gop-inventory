@@ -10,10 +10,18 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
     $year = $_REQUEST[ 'year' ];
 }
 
+$page = 1;
+if ( isset( $_REQUEST[ 'page' ] ) ) {
+    $page = $_REQUEST[ 'page' ];
+}
+
+$keyer = 1;
+if ( isset( $_REQUEST[ 'keyer' ] ) ) {
+    $keyer = $_REQUEST[ 'keyer' ];
+}
+
 $db = new DB();
 
-$pages = get_pages( $year, $db );
-$keyers = get_keyers( $year, $db );
 
 ?>
 
@@ -44,16 +52,10 @@ $keyers = get_keyers( $year, $db );
 
                 <div class="row">
                     <div class="col-md-12">
-                        <?php if ( !empty( $pages ) ) { ?>
+                        <?php if ( !empty( $years ) ) { ?>
                             <ul>
-                                <?php foreach ( $pages as $page ) {
-                                    $keyer = 'Name Unknown';
-                                    if ( isset( $keyers[ $page[ 'keyer' ] ] ) ) {
-                                        $keyer = $keyers[ $page[ 'keyer' ] ];
-                                    }
-                                    echo '<li><a href="page.php?year=' . $year .
-                                        '&page=' . $page[ 'page' ] .
-                                        '&keyer=' . $page[ 'keyer' ] . '">Page ' . $page[ 'page' ] . ', ' . $keyer . '</a></li>';
+                                <?php foreach ( $years as $year ) {
+                                    echo '<li><a href="add.php?year=' . $year[ 'year' ] . '">Previous Year: ' . $year[ 'year' ] . '</a></li>';
                                 } ?>
                             </ul>
                         <?php } ?>
