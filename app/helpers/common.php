@@ -17,3 +17,28 @@ if ( !function_exists( 'redirect' ) ) {
         header( 'Location: ' . $location );
     }
 }
+
+if ( !function_exists( 'get_error' ) ) {
+    /**
+     * Translate the specified error code into human readable text
+     * @param string $errorCode
+     *
+     * @return string
+     */
+    function get_error( $errorCode )
+    {
+        switch ( $errorCode ) {
+            case 'ERRORSAVE':
+                $error = 'There was a problem adding the record(s)';
+            break;
+            case 'ERRORUPDATE':
+                $error = 'There was a problem updating the record(s).';
+            break;
+            default:
+                $error = 'An error has occurred.';
+
+        }
+
+        return $error;
+    }
+}

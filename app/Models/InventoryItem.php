@@ -8,31 +8,18 @@
 
 namespace GOP\Inventory\Models;
 
-use Exception;
-
 class InventoryItem extends AbstractModel
 {
     /**
-     * @param array $record
-     *
-     * @return bool
-     *
-     * @throws Exception
+     * @var string
      */
-    public function create( array $record )
+    protected $table = 'inventory';
+
+    /**
+     * @return string
+     */
+    public function getTable()
     {
-        try {
-            $this->db->fields( $record )->table( 'inventory' )->insert();
-
-            return true;
-        } catch ( Exception $exception ) {
-
-        }
-
-        return false;
-    }
-
-    public function save()
-    {
+        return $this->table;
     }
 }

@@ -8,6 +8,28 @@
 
 use GOP\Inventory\DB;
 
+if ( !function_exists( 'get_inventory_items' ) ) {
+    function get_inventory_items( $year, $page = '', $keyer = '', $db = '' )
+    {
+        if ( !$db instanceof DB ) {
+            $db = new DB();
+        }
+
+        $where = [ 'year' => $year ];
+        if ( !empty( $page ) ) {
+            $where[ 'page' ] = $page;
+        }
+        if ( !empty( $keyer ) ) {
+            $where[ 'keyer' ] = $keyer;
+        }
+        $items = $db->table( 'inventory' )
+            ->where( $where )
+            ->select();
+
+        return $items;
+    }
+}
+
 if ( !function_exists( 'get_keyers' ) ) {
     /**
      * Get a list of keyers from the database for the specified year.

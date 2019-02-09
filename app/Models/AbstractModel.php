@@ -8,6 +8,7 @@
 
 namespace GOP\Inventory\Models;
 
+use Exception;
 use GOP\Inventory\DB;
 
 abstract class AbstractModel
@@ -29,7 +30,52 @@ abstract class AbstractModel
         return $this;
     }
 
-    abstract function create( array $record );
+    abstract public function getTable();
 
-    abstract function save();
+    /**
+     * Add a new inventory item to the database.
+     *
+     * @param array $record
+     *
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public function create( array $record )
+    {
+        try {
+            $this->db->fields( $record )
+                ->table( $this->getTable() )
+                ->insert();
+
+            return true;
+        } catch ( Exception $exception ) {}
+
+        return false;
+    }
+
+    /**
+     * Update an existing inventory item in the database.
+     *
+     * @param int $id
+     * @param array $record
+     *
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public function save( $id, array $record )
+    {
+        try {
+            $this->db->fields( $record )
+                ->table( $this->getTable() )
+                ->where( [ 'id' => $id ] )
+                ->limit( 1 )
+                ->update();
+
+            return true;
+        } catch ( Exception $exception ) {}
+
+        return false;
+    }
 }
