@@ -124,13 +124,13 @@ $first = $items[ $keys[ 0 ] ];
                     </div>
 
                     <div class="labels">
-                        <?php include( '../row-heading.php' ); ?>
+                        <?php include( '../inventory-heading.php' ); ?>
                     </div>
 
                     <div class="inventory-items">
                         <?php if ( !empty( $items ) ) { ?>
                             <?php foreach ( $items as $row ) {
-                                include( '../row-item.php' );
+                                include( '../inventory-row.php' );
                             } ?>
                         <?php } ?>
                     </div>

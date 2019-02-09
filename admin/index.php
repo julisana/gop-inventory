@@ -48,6 +48,7 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                                     Start New Year (<?php echo date( 'Y' ) ?> Already Started)
                                 <?php } ?>
                             </li>
+
                             <li>
                                 <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
                                     <a href="inventory-page-list.php">View Inventory Page List (Current Year)</a>
@@ -58,6 +59,36 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                                     <ul>
                                         <?php foreach ( $years as $year ) {
                                             echo '<li><a href="inventory-page-list.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
+                                        } ?>
+                                    </ul>
+                                <?php } ?>
+                            </li>
+
+                            <li>
+                                <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
+                                    <a href="keyers-list.php">View Keyers (Current Year)</a>
+                                <?php } else { ?>
+                                    View Keyers (Current Year Not Started Yet)
+                                <?php } ?>
+                                <?php if ( !empty( $years ) ) { ?>
+                                    <ul>
+                                        <?php foreach ( $years as $year ) {
+                                            echo '<li><a href="keyers-list.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
+                                        } ?>
+                                    </ul>
+                                <?php } ?>
+                            </li>
+
+                            <li>
+                                <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
+                                    <a href="manufacturers-list.php">View Manufacturers (Current Year)</a>
+                                <?php } else { ?>
+                                    View Manufacturers (Current Year Not Started Yet)
+                                <?php } ?>
+                                <?php if ( !empty( $years ) ) { ?>
+                                    <ul>
+                                        <?php foreach ( $years as $year ) {
+                                            echo '<li><a href="manufacturers-list.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
                                         } ?>
                                     </ul>
                                 <?php } ?>

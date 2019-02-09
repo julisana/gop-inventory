@@ -95,11 +95,11 @@ $manufacturers = get_manufacturers( $year, $db );
                     <hr />
 
                     <div class="labels">
-                        <?php include( 'row-heading.php' ); ?>
+                        <?php include( 'inventory-heading.php' ); ?>
                     </div>
 
                     <div class="inventory-items">
-                        <?php include( 'row-item.php' ); ?>
+                        <?php include( 'inventory-row.php' ); ?>
                     </div>
 
                     <div class="row">
