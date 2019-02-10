@@ -20,15 +20,21 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         'keyer' => $keyer,
     ];
 
-    foreach ( $_REQUEST[ 'inventory' ] as $id => $inventoryItem ) {
+    $error = false;
+
+    foreach ( $_REQUEST[ 'inventory' ] as $inventoryItem ) {
         $inventoryItem = array_merge( $inventoryItem, $shared );
 
         try {
-            $inventory->setDB( $db )->save( $id, $inventoryItem );
+            $inventory->setDB( $db )->save( $inventoryItem );
         }
         catch (Exception $e) {
             redirect( 'page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer . '&error=ERRORUPDATE' );
         }
+    }
+
+    if ( $error ) {
+        redirect( 'page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer . '&error=' . $error );
     }
 
     redirect( 'page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer );
@@ -129,7 +135,7 @@ $first = $items[ $keys[ 0 ] ];
 
                     <div class="inventory-items">
                         <?php if ( !empty( $items ) ) { ?>
-                            <?php foreach ( $items as $row ) {
+                            <?php foreach ( $items as $index => $row ) {
                                 include( '../inventory-row.php' );
                             } ?>
                         <?php } ?>
@@ -143,5 +149,57 @@ $first = $items[ $keys[ 0 ] ];
                 </form>
             </div>
         </div>
+
+        <script type="text/javascript">
+            function addRow(parentClass) {
+                var html = $(parentClass).last().html();
+
+                var item = document.createElement('div');
+                item.setAttribute('class', 'row inventory-item');
+                item.innerHTML = html;
+
+                //If there are any values in any input or textarea, reset them.
+                $(item).find('input, select').each(function (key, element) {
+                    $(element).val('');
+
+                    if ($(element).hasClass('id')) {
+                        $(element).remove();
+                    }
+                });
+
+                return item;
+            }
+
+            function renameChildren() {
+                //Iterate through children and renumber them
+                $('.inventory-items > div').each(function (key, element) {
+                    var remove = $(element).find('.remove-item').first();
+                    remove.attr('data-row', key);
+
+                    if (key > 0) {
+                        remove.removeClass('d-none');
+                    }
+
+                    $(element).find('input, select').each(function (inputKey, input) {
+                        var name = $(input).attr('name').replace(/\[[\d]+\]/ig, '[' + key + ']');
+                        $(input).attr('name', name);
+                    });
+                });
+            }
+
+            $(document).on('click', '.remove-item', function () {
+                var parent = $(this).parents('.inventory-item');
+                $(parent).remove();
+            });
+
+            //Generate a new line
+            $('.inventory-items').on('keyup', '.sell-price', function (event) {
+                if (event.key === 'Tab' && $(this).prop('name') === $('.sell-price').last().prop('name')) {
+                    $('.inventory-items').append(addRow('.inventory-item'));
+
+                    renameChildren();
+                }
+            });
+        </script>
     </body>
 </html>

@@ -43,39 +43,38 @@ abstract class AbstractModel
      */
     public function create( array $record )
     {
-        try {
-            $this->db->fields( $record )
-                ->table( $this->getTable() )
-                ->insert();
+        $this->db->fields( $record )
+            ->table( $this->getTable() )
+            ->insert();
 
-            return true;
-        } catch ( Exception $exception ) {}
-
-        return false;
+        return true;
     }
 
     /**
      * Update an existing inventory item in the database.
      *
-     * @param int $id
      * @param array $record
      *
      * @return bool
      *
      * @throws Exception
      */
-    public function save( $id, array $record )
+    public function save( array $record )
     {
-        try {
-            $this->db->fields( $record )
-                ->table( $this->getTable() )
-                ->where( [ 'id' => $id ] )
-                ->limit( 1 )
-                ->update();
+        //Pull the ID out of the record
+        if ( !isset( $record[ 'id' ] ) ) {
+            throw new Exception( 'No ID Found.' );
+        }
 
-            return true;
-        } catch ( Exception $exception ) {}
+        $id = $record[ 'id' ];
+        unset( $record[ 'id' ] );
 
-        return false;
+        $this->db->fields( $record )
+            ->table( $this->getTable() )
+            ->where( [ 'id' => $id ] )
+            ->limit( 1 )
+            ->update();
+
+        return true;
     }
 }

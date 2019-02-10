@@ -3,29 +3,29 @@
 require_once( './../config.php' );
 
 use GOP\Inventory\DB;
-use GOP\Inventory\Models\Keyer;
+use GOP\Inventory\Models\Manufacturer;
 
 $db = new DB();
 
 if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
-    $keyer = new Keyer();
+    $manufacturer = new Manufacturer();
     $year = $_REQUEST[ 'year' ];
     $shared = [
         'year' => $year,
     ];
 
-    foreach ( $_REQUEST[ 'keyers' ] as $keyerItem ) {
-        $keyerItem = array_merge( $keyerItem, $shared );
+    foreach ( $_REQUEST[ 'manufacturers' ] as $manufacturerItem ) {
+        $manufacturerItem = array_merge( $manufacturerItem, $shared );
 
         try {
-            $keyer->setDB( $db )->save( $keyerItem );
+            $manufacturer->setDB( $db )->save( $manufacturerItem );
         }
         catch (Exception $e) {
-            redirect( 'keyers-list.php?year=' . $year . '&error=ERRORUPDATE' );
+            redirect( 'manufacturer-list.php?year=' . $year . '&error=ERRORUPDATE' );
         }
     }
 
-    redirect( 'keyers-list.php?year=' . $year );
+    redirect( 'manufacturer-list.php?year=' . $year );
 }
 
 $year = date( 'Y' );
@@ -33,7 +33,7 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
     $year = $_REQUEST[ 'year' ];
 }
 
-$keyers = $db->table( 'keyer' )
+$manufacturers = $db->table( 'manufacturer' )
     ->where( [ 'year' => $year ] )
     ->select();
 
@@ -42,7 +42,7 @@ $keyers = $db->table( 'keyer' )
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Keyers List</title>
+        <title>Manufacturers List</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css"
               href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
@@ -58,7 +58,7 @@ $keyers = $db->table( 'keyer' )
                         <img src="../img/General-Office-Products-Logo.png" alt="logo" />
                     </div>
                     <div class="col-md-4 text-center">
-                        <h2>Keyers List - <?php echo $year; ?></h2>
+                        <h2>Manufacturers List - <?php echo $year; ?></h2>
                     </div>
                     <div class="col-md-4 text-right">
                         <a href="index.php">Admin Home</a><br />
@@ -68,7 +68,7 @@ $keyers = $db->table( 'keyer' )
                 <div class="row">&nbsp;</div>
 
                 <?php include( '../errors.php' ); ?>
-                <form action="keyers-list.php" method="post">
+                <form action="manufacturers-list.php" method="post">
                     <input type="hidden" name="year" value="<?php echo $year ?>" />
 
                     <div class="labels">
@@ -87,10 +87,10 @@ $keyers = $db->table( 'keyer' )
 
                     </div>
 
-                    <div class="keyers">
-                        <?php if ( !empty( $keyers ) ) { ?>
-                            <?php foreach ( $keyers as $index => $row ) {
-                                include( 'keyer-row.php' );
+                    <div class="manufacturers">
+                        <?php if ( !empty( $manufacturers ) ) { ?>
+                            <?php foreach ( $manufacturers as $index => $row ) {
+                                include( 'manufacturer-row.php' );
                             } ?>
                         <?php } ?>
                     </div>
@@ -109,8 +109,9 @@ $keyers = $db->table( 'keyer' )
                 var html = $(parentClass).last().html();
 
                 var item = document.createElement('div');
-                item.setAttribute('class', 'row keyer-item');
+                item.setAttribute('class', 'row manufacturer-item');
                 item.innerHTML = html;
+
 
                 //If there are any values in any input or textarea, reset them.
                 $(item).find('input, select').each(function (key, element) {
@@ -126,7 +127,7 @@ $keyers = $db->table( 'keyer' )
 
             function renameChildren() {
                 //Iterate through children and renumber them
-                $('.keyers > div').each(function (key, element) {
+                $('.manufacturers > div').each(function (key, element) {
                     var remove = $(element).find('.remove-item').first();
                     remove.attr('data-row', key);
 
@@ -142,14 +143,14 @@ $keyers = $db->table( 'keyer' )
             }
 
             $(document).on('click', '.remove-item', function () {
-                var parent = $(this).parents('.keyer-item');
+                var parent = $(this).parents('.manufacturer-item');
                 $(parent).remove();
             });
 
             //Generate a new line
-            $('.keyers').on('keyup', '.name', function (event) {
+            $('.manufacturers').on('keyup', '.name', function (event) {
                 if (event.key === 'Tab' && $(this).prop('name') === $('.name').last().prop('name')) {
-                    $('.keyers').append(addRow('.keyer-item'));
+                    $('.manufacturers').append(addRow('.manufacturer-item'));
 
                     renameChildren();
                 }

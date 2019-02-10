@@ -34,6 +34,9 @@ if ( !function_exists( 'get_error' ) ) {
             case 'ERRORUPDATE':
                 $error = 'There was a problem updating the record(s).';
             break;
+            case 'ERRORNOID':
+                $error = 'One or more records could not be updated.';
+            break;
             default:
                 $error = 'An error has occurred.';
 

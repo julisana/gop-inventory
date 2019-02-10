@@ -144,14 +144,13 @@ $manufacturers = get_manufacturers( $year, $db );
                     }
 
                     $(element).find('input, select').each(function (inputKey, input) {
-                        let name = $(input).attr('name').replace(/\[[\d+]\]/ig, '[' + key + ']');
+                        var name = $(input).attr('name').replace(/\[[\d]+\]/ig, '[' + key + ']');
                         $(input).attr('name', name);
                     });
                 });
             }
 
             $(document).on('click', '.remove-item', function () {
-                console.log($(this));
                 var parent = $(this).parents('.inventory-item');
                 $(parent).remove();
             });

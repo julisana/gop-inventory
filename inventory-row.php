@@ -12,9 +12,8 @@
         ];
     }
 
-    $index = 0;
-    if ( isset( $row[ 'id' ] ) ) {
-        $index = $row[ 'id' ];
+    if ( !isset( $index ) ) {
+        $index = 0;
     }
 ?>
 
@@ -23,6 +22,9 @@
         <div class="form-group">
             <input type="number" class="form-control line" name="inventory[<?php echo $index; ?>][line_number]"
                    value="<?php echo $row[ 'line_number' ]; ?>" />
+            <?php if ( isset( $row[ 'id' ] ) ) { ?>
+                <input type="hidden" class="id" name="inventory[<?php echo $index; ?>][id]" value="<?php echo $row[ 'id' ]; ?>" />
+            <?php } ?>
         </div>
     </div>
     <div class="col-md-1">
