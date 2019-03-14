@@ -103,8 +103,9 @@ if ( !function_exists( 'get_existing_years' ) ) {
         }
 
         $years = [];
-        $results = $db->table( 'inventory' )
+        $results = $db->table( 'keyer' )
             ->fields( [ 'distinct year' ] )
+            ->orderBy( 'year asc' )
             ->select();
 
         foreach ( $results as $result ) {

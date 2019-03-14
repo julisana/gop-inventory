@@ -38,14 +38,17 @@ $keyers = get_keyers( $year, $db );
                     <div class="col-md-4 text-center">
                         <h2>Inventory Pages - <?php echo $year; ?></h2>
                     </div>
+                    <div class="col-md-4 text-right">
+                        <a href="index.php">Admin Home</a><br />
+                    </div>
                 </div>
 
                 <div class="row">&nbsp;</div>
 
                 <div class="row">
                     <div class="col-md-12">
-                        <?php if ( !empty( $pages ) ) { ?>
-                            <ul>
+                        <ul>
+                            <?php if ( !empty( $pages ) ) { ?>
                                 <?php foreach ( $pages as $page ) {
                                     $keyer = 'Name Unknown';
                                     if ( isset( $keyers[ $page[ 'keyer' ] ] ) ) {
@@ -55,8 +58,10 @@ $keyers = get_keyers( $year, $db );
                                         '&page=' . $page[ 'page' ] .
                                         '&keyer=' . $page[ 'keyer' ] . '">Page ' . $page[ 'page' ] . ', ' . $keyer . '</a></li>';
                                 } ?>
-                            </ul>
-                        <?php } ?>
+                            <?php } else { ?>
+                                <li>No pages added yet. <a href="../add.php?year=<?php echo $year; ?>">Add one</a></li>
+                            <?php } ?>
+                        </ul>
                     </div>
                 </div>
             </div>

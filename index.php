@@ -47,7 +47,9 @@ $years = get_existing_years( $db );
                                 <?php if ( !empty( $years ) ) { ?>
                                     <ul>
                                         <?php foreach ( $years as $year ) {
-                                            echo '<li><a href="add.php?year=' . $year[ 'year' ] . '">Previous Year: ' . $year[ 'year' ] . '</a></li>';
+                                            if ( $year != date( 'Y' ) ) {
+                                                echo '<li><a href="add.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
+                                            }
                                         } ?>
                                     </ul>
                                 <?php } ?>

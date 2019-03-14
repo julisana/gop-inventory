@@ -69,11 +69,46 @@ abstract class AbstractModel
         $id = $record[ 'id' ];
         unset( $record[ 'id' ] );
 
-        $this->db->fields( $record )
-            ->table( $this->getTable() )
+        $this->db->table( $this->getTable() )
+            ->fields( $record )
             ->where( [ 'id' => $id ] )
             ->limit( 1 )
             ->update();
+
+        return true;
+    }
+
+    /**
+     * Upsert a record, records that don't have a pre-defined ID field will be created, the rest will be saved.
+     *
+     * @param array $record
+     *
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public function saveOrCreate( array $record )
+    {
+        if ( !isset( $record[ 'id' ] ) ) {
+            return $this->create( $record );
+        }
+
+        return $this->save( $record );
+    }
+
+    /**
+     * Delete a record from the database
+     *
+     * @param $id
+     *
+     * @return bool
+     */
+    public function delete( $id, $year )
+    {
+        $this->db->table( $this->getTable() )
+            ->where( [ 'id' => $id, 'year' => $year ] )
+            ->limit( 1 )
+            ->delete();
 
         return true;
     }

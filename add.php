@@ -156,7 +156,7 @@ $manufacturers = get_manufacturers( $year, $db );
             });
 
             //Generate a new line
-            $('.inventory-items').on('keyup', '.sell-price', function (event) {
+            $('.inventory-items').on('keydown', '.sell-price', function (event) {
                 if (event.key === 'Tab' && $(this).prop('name') === $('.sell-price').last().prop('name')) {
                     $('.inventory-items').append(addRow('.inventory-item'));
 

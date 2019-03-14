@@ -70,6 +70,10 @@ class DB
      * @var string
      */
     protected $orderBy;
+    /**
+     * @var array
+     */
+    protected $duplicateKey;
 
     /**
      * DB constructor.
@@ -98,7 +102,8 @@ class DB
             ->where()
             ->start()
             ->limit()
-            ->orderBy();
+            ->orderBy()
+            ->onDuplicateKeyUpdate();
 
         return $this;
     }
@@ -200,7 +205,23 @@ class DB
     }
 
     /**
-     * Create the connection to the MySQL Database
+     * @param array $duplicateKey
+     *
+     * @return $this
+     */
+    public function onDuplicateKeyUpdate( $duplicateKey = [] )
+    {
+        if ( !is_array( $duplicateKey ) ) {
+            return $this;
+        }
+
+        $this->duplicateKey = $duplicateKey;
+
+        return $this;
+    }
+
+    /**
+     * Create the connection to the MySQL database
      */
     public function connect()
     {
@@ -246,15 +267,38 @@ class DB
     }
 
     /**
-     * Perform an INSERT query against the MySQL Database
+     * Perform an UPSERT style query against the MySQL database
+     *
+     * @return array|bool|PDOStatement
+     * @throws Exception
+     */
+    public function upsert()
+    {
+        $clone = clone $this;
+        $insert = $this->insert( true );
+
+        if ( !empty( $insert ) ) {
+            return $insert;
+        }
+
+        return $clone->select();
+    }
+
+    /**
+     * Perform an INSERT query against the MySQL database
+     *
+     * @param bool $ignore
+     * @return bool|PDOStatement
      *
      * @throws Exception
      */
-    public function insert()
+    public function insert( $ignore = false )
     {
-        $options = [];
-
         $query = 'insert into ' . $this->table;
+        //Use insert ignore to perform an upsert-like operation
+        if ( $ignore ) {
+            $query = 'insert ignore into ' . $this->table;
+        }
 
         if ( empty( $this->fields ) ) {
             throw new Exception( 'No data has been set for insert.' );
@@ -295,45 +339,42 @@ class DB
 
         $query .= ')';
 
-        $results = $this->query( $query, $options );
+        if ( !empty( $this->duplicateKey ) ) {
+            $query .= ' ON DUPLICATE KEY UPDATE';
+
+            $keys = array_keys( $this->duplicateKey );
+            $last = end( $keys );
+            foreach ( $this->duplicateKey as $key => $value ) {
+                $query .= ' ' . $key . '=' . '"' . $value . '"';
+
+                if ( $key != $last ) {
+                    $query .= ',';
+                }
+            }
+        }
+
+        $results = $this->query( $query );
         $this->reset();
 
         return $results;
     }
 
     /**
-     * Perform a SELECT query against the MySQL Database
+     * Perform a SELECT query against the MySQL database
      *
      * @return array
      */
     public function select()
     {
-        $options = [];
-
         //Build the query
         $query = 'select ' . implode( ',', $this->fields ) . ' from ' . $this->table;
 
         if ( !empty( $this->where ) ) {
-            $query .= ' where';
-
-            $keys = array_keys( $this->where );
-            $last = end( $keys );
-            foreach ( $this->where as $field => $value ) {
-                $query .= ' ' . $field . '="' . $value . '"';
-
-                if ( $field != $last ) {
-                    $query .= ' and';
-                }
-            }
+            $query .= $this->addWhereToQuery();
         }
 
         if ( !empty( $this->limit ) ) {
-            $query .= ' limit';
-            if ( !empty( $this->start ) ) {
-                $query .= ' ' . $this->start . ',';
-            }
-
-            $query .= ' ' . $this->limit;
+            $query .= $this->addLimitToQuery();
         }
 
         if ( !empty( $this->orderBy ) ) {
@@ -341,7 +382,7 @@ class DB
         }
 
         try {
-            $results = $this->query( $query, $options );
+            $results = $this->query( $query );
         } catch ( Exception $exception ) {
             /** @todo Do something with this query error */
 
@@ -357,7 +398,7 @@ class DB
     }
 
     /**
-     * Perform an UPDATE query against the MySQL Database
+     * Perform an UPDATE query against the MySQL database
      *
      * @return int
      *
@@ -365,8 +406,6 @@ class DB
      */
     public function update()
     {
-        $options = [];
-
         if ( empty( $this->fields ) ) {
             throw new Exception( 'No data have been set for update.' );
         }
@@ -383,17 +422,31 @@ class DB
         }
 
         if ( !empty( $this->where ) ) {
-            $query .= ' where';
+            $query .= $this->addWhereToQuery();
+        }
 
-            $keys = array_keys( $this->where );
-            $last = end( $keys );
-            foreach ( $this->where as $field => $value ) {
-                $query .= ' ' . $field . '="' . $value . '"';
+        if ( !empty( $this->limit ) ) {
+            $query .= $this->addLimitToQuery();
+        }
 
-                if ( $field != $last ) {
-                    $query .= ' and';
-                }
-            }
+        $result = $this->query( $query );
+
+        $this->reset();
+
+        return $result->rowCount();
+    }
+
+    /**
+     * Perform a DELETE query against the MySQL database
+     *
+     * @return int
+     */
+    public function delete()
+    {
+        $query = 'delete from ' . $this->table;
+
+        if ( !empty( $this->where ) ) {
+            $query .= $this->addWhereToQuery();
         }
 
         if ( !empty( $this->limit ) ) {
@@ -408,12 +461,41 @@ class DB
     }
 
     /**
-     * Perform a DELETE query against the MySQL Database
+     * Build the WHERE clause of a query and return it
      *
-     * @return int
+     * @return string
      */
-    public function delete()
+    protected function addWhereToQuery()
     {
-        return 0;
+        $query = ' where';
+
+        $keys = array_keys( $this->where );
+        $last = end( $keys );
+        foreach ( $this->where as $field => $value ) {
+            $query .= ' ' . $field . '="' . $value . '"';
+
+            if ( $field != $last ) {
+                $query .= ' and';
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Build the LIMIT clause of a query and return it
+     *
+     * @return string
+     */
+    protected function addLimitToQuery()
+    {
+        $query = ' limit';
+        if ( !empty( $this->start ) ) {
+            $query .= ' ' . $this->start . ',';
+        }
+
+        $query .= ' ' . $this->limit;
+
+        return $query;
     }
 }

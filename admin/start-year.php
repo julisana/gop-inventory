@@ -9,77 +9,48 @@
 require_once( './../config.php' );
 
 use GOP\Inventory\DB;
+use GOP\Inventory\Models\Keyer;
+use GOP\Inventory\Models\Manufacturer;
 
 $db = new DB();
 
 if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
-    $inventory = new InventoryItem();
-    $shared = [
-        'location' => $_REQUEST[ 'location' ],
-        'year' => $_REQUEST[ 'year' ],
-        'page' => $_REQUEST[ 'page' ],
-        'keyer' => $_REQUEST[ 'keyer' ],
-    ];
+    $year = date( 'Y' );
+    if ( !empty( $_REQUEST[ 'year' ] ) ) {
+        $year = $_REQUEST[ 'year' ];
+    }
+    $years = array_reverse( get_existing_years( $db ) );
+    $previousYear = array_shift( $years );
 
-    redirect( './../admin/index.php' );
+    if ( in_array( $year, $years ) ) {
+        //return and do the error stuff
+    }
+
+    $keyer = new Keyer();
+    $keyer->setDB( $db );
+    $manufacturer = new Manufacturer();
+    $manufacturer->setDB( $db );
+
+    $keyers = $db->table( 'keyer' )
+        ->fields( [ 'code', 'name' ] )
+        ->where( [ 'year' => $previousYear ] )
+        ->select();
+
+    $manufacturers = $db->table( 'manufacturer' )
+        ->fields( [ 'code', 'name' ] )
+        ->where( [ 'year' => $previousYear ] )
+        ->select();
+
+    //Create Keyers and Manufacturers from the previous years
+    foreach ( $keyers as $keyerItem ) {
+        $keyerItem[ 'year' ] = date( 'Y' );
+        $keyer->create( $keyerItem );
+    }
+
+    foreach ( $manufacturers as $manufacturerItem ) {
+        $manufacturerItem[ 'year' ] = date( 'Y' );
+        $manufacturer->create( $manufacturerItem );
+    }
 }
 
-$years = get_existing_years( $db );
-
-$yearStarted = false;
-if ( in_array( date( 'Y' ), $years ) ) {
-    $yearStarted = true;
-}
-
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Start New Year</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" type="text/css"
-              href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="../styles/app.css" />
-
-        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    </head>
-    <body>
-        <div id="container">
-            <div class="content p-5">
-                <div class="row header">
-                    <div class="col-md-4">
-                        <img src="../img/General-Office-Products-Logo.png" alt="logo" />
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <h2>Start New Year</h2>
-                    </div>
-                </div>
-<?php if ( !$yearStarted ) { ?>
-                <div class="row">
-                    <div class="col-md-6 offset-3">
-                        Starting a new year will copy the keyers and manufacturers from the previous year so you aren't
-                        starting from scratch. You can modify these values to be whatever you need.
-                    </div>
-                </div>
-
-                <div class="row">&nbsp;</div>
-
-                <div class="row">
-                    <div class="col-md-4 offset-4">
-                        <form action="start-year.php" method="post">
-                            <input type="submit" class="form-control btn btn-success" value="Start New Year" />
-                        </form>
-                    </div>
-                </div>
-<?php } else { ?>
-                <div class="row">
-                    <div class="col-md-4 offset-4 text-center">
-                        The current year (<?php echo date( 'Y' ); ?>) has already been started.
-                    </div>
-                </div>
-<?php } ?>
-            </div>
-        </div>
-    </body>
-</html>
+redirect( 'index.php' );

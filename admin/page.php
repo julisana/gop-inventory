@@ -129,6 +129,8 @@ $first = $items[ $keys[ 0 ] ];
                         </div>
                     </div>
 
+                    <hr />
+
                     <div class="labels">
                         <?php include( '../inventory-heading.php' ); ?>
                     </div>
@@ -153,6 +155,7 @@ $first = $items[ $keys[ 0 ] ];
         <script type="text/javascript">
             function addRow(parentClass) {
                 var html = $(parentClass).last().html();
+                var rowId = parseInt($(html).find('.remove-item').first().attr('data-row'), 10) + 1;
 
                 var item = document.createElement('div');
                 item.setAttribute('class', 'row inventory-item');
@@ -165,30 +168,34 @@ $first = $items[ $keys[ 0 ] ];
                     if ($(element).hasClass('id')) {
                         $(element).remove();
                     }
+
+                    if ($(element).hasClass('code')) {
+                        $(element).attr('name', 'inventory[' + rowId + '][code]');
+                    } else if ($(element).hasClass('name')) {
+                        $(element).attr('name', 'inventory[' + rowId + '][name]')
+                    }
                 });
+
+                $(item).find('.remove-item').first().attr('data-row', rowId);
 
                 return item;
             }
 
-            function renameChildren() {
-                //Iterate through children and renumber them
-                $('.inventory-items > div').each(function (key, element) {
-                    var remove = $(element).find('.remove-item').first();
-                    remove.attr('data-row', key);
-
-                    if (key > 0) {
-                        remove.removeClass('d-none');
-                    }
-
-                    $(element).find('input, select').each(function (inputKey, input) {
-                        var name = $(input).attr('name').replace(/\[[\d]+\]/ig, '[' + key + ']');
-                        $(input).attr('name', name);
-                    });
-                });
-            }
-
             $(document).on('click', '.remove-item', function () {
                 var parent = $(this).parents('.inventory-item');
+                var id = $(parent).find('.id').first().val();
+
+                //Make sure the ID is defined. Newly added rows won't have an ID
+                if (typeof id !== 'undefined') {
+                    var deleteIds = [];
+                    if (document.getElementById('delete').value.length) {
+                        deleteIds = document.getElementById('delete').value.split(',');
+                    }
+
+                    deleteIds.push(id);
+                    document.getElementById('delete').value = deleteIds.join(',');
+                }
+
                 $(parent).remove();
             });
 
@@ -196,8 +203,6 @@ $first = $items[ $keys[ 0 ] ];
             $('.inventory-items').on('keyup', '.sell-price', function (event) {
                 if (event.key === 'Tab' && $(this).prop('name') === $('.sell-price').last().prop('name')) {
                     $('.inventory-items').append(addRow('.inventory-item'));
-
-                    renameChildren();
                 }
             });
         </script>
