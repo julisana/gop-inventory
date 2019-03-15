@@ -125,99 +125,31 @@ foreach ( $results as $result ) {
                     <div class="row">
                         <div class="col-md-2">
                             <input type="hidden" name="deleteIds" id="delete" value="" />
-                            <input type="submit" class="form-control btn btn-success" name="save" value="Save changes" />
+                            <input type="submit" class="form-control btn btn-success" name="save"
+                                   value="Save changes" />
                         </div>
                     </div>
                 </form>
             </div>
         </div>
 
+        <script type="text/javascript" src="../scripts/app.js"></script>
         <script type="text/javascript">
-            function addRow(parentClass) {
-                var html = $(parentClass).last().html();
-                var rowId = parseInt($(html).find('.remove-item').first().attr('data-row'), 10) + 1;
-
-                var item = document.createElement('div');
-                item.setAttribute('class', 'row manufacturer-item');
-                item.innerHTML = html;
-
-                //If there are any values in any input or textarea, reset them.
-                $(item).find('input, select').each(function (key, element) {
-                    $(element).val('');
-
-                    if ($(element).hasClass('id')) {
-                        $(element).remove();
-                    }
-
-                    if ($(element).hasClass('code')) {
-                        $(element).attr('name', 'manufacturers[' + rowId + '][code]');
-                    } else if ($(element).hasClass('name')) {
-                        $(element).attr('name', 'manufacturers[' + rowId + '][name]')
-                    }
-                });
-
-                $(item).find('.remove-item').first().attr('data-row', rowId);
-
-                return item;
-            }
-
             //Remove the line and record the ID in the delete input
             $(document).on('click', '.btn-danger.remove-item', function () {
-                var parent = $(this).parents('.manufacturer-item');
-                var id = $(parent).find('.id').first().val();
-
-                //Make sure the ID is defined. Newly added rows won't have an ID
-                if (typeof id !== 'undefined') {
-                    var deleteIds = [];
-                    if (document.getElementById('delete').value.length) {
-                        deleteIds = document.getElementById('delete').value.split(',');
-                    }
-
-                    deleteIds.push(id);
-                    document.getElementById('delete').value = deleteIds.join(',');
-                }
-
-                $(parent).remove();
-
-                //Hide the remove button if there is only one item in the list
-                if (!($('.manufacturer-item').length > 1)) {
-                    $('.remove-item').addClass('d-none');
-                }
+                removeAdminRow(this, 'manufacturer-item');
             });
 
             //Generate a new line via tab
             $('.manufacturers').on('keydown', '.name', function (event) {
                 if (event.key === 'Tab' && $(this).prop('name') === $('.name').last().prop('name')) {
-                    $('.manufacturers').append(addRow('.manufacturer-item'));
+                    $('.manufacturers').append(addAdminRow('manufacturer-item', 'manufacturers'));
 
                     //Show the remove button if there is more than one item in the list
                     if ($('.manufacturer-item').length > 1) {
                         $('.remove-item').removeClass('d-none');
                     }
                 }
-            });
-
-            $(function () {
-                $('[data-toggle="popover"]').popover({
-                    content: 'This manufacturer is associated with an inventory item.',
-                    placement: 'right'
-                });
-            });
-
-            //Hide the popover if the popover box has been clicked
-            $(document).on('click', '.popover', function() {
-                (($('[data-toggle="popover"]').popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
-            });
-
-            //Hide the popover if outside the popover box has been clicked
-            $(document).on('click', function (e) {
-                $('[data-toggle="popover"],[data-original-title]').each(function () {
-                    //the 'is' for buttons that trigger popups
-                    //the 'has' for icons within a button that triggers a popup
-                    if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                        (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
-                    }
-                });
             });
         </script>
     </body>
