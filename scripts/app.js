@@ -6,8 +6,8 @@ $(function () {
 });
 
 //Hide the popover if the popover box has been clicked
-$(document).on('click', '.popover', function() {
-    (($('[data-toggle="popover"]').popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
+$(document).on('click', '.popover', function () {
+    (($('[data-toggle="popover"]').popover('hide').data('bs.popover') || {}).inState || {}).click = false  // fix for BS 3.3.6
 });
 
 //Hide the popover if outside the popover box has been clicked
@@ -16,18 +16,18 @@ $(document).on('click', function (e) {
         //the 'is' for buttons that trigger popups
         //the 'has' for icons within a button that triggers a popup
         if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-            (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
+            (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false  // fix for BS 3.3.6
         }
     });
 });
 
 //Add a row to an admin page
-function addAdminRow(parentClass, elementName) {
-    var html = $('.' + parentClass).last().html();
+function addRow(rowClass) {
+    var html = $('.' + rowClass).last().html();
     var rowId = parseInt($(html).find('.remove-item').first().attr('data-row'), 10) + 1;
 
     var item = document.createElement('div');
-    item.setAttribute('class', 'row ' + parentClass);
+    item.setAttribute('class', 'row ' + rowClass);
     item.innerHTML = html;
 
     //If there are any values in any input or textarea, reset them.
@@ -38,25 +38,22 @@ function addAdminRow(parentClass, elementName) {
             $(element).remove();
         }
 
-        if ($(element).hasClass('code')) {
-            $(element).attr('name', elementName + '[' + rowId + '][code]');
-        } else if ($(element).hasClass('name')) {
-            $(element).attr('name', elementName + '[' + rowId + '][name]')
-        } else if ($(element).hasClass('disabled')) {
+        //Change the ID display
+        if ($(element).hasClass('disabled')) {
             $(element).html('NEW');
-        } else if ($(element).hasClass('remove-item') && !$(element).hasClass('btn-danger')) {
+        }
+        //Make the remove button usable again
+        else if ($(element).hasClass('remove-item') && $(element).hasClass('btn-secondary')) {
             $(element).removeClass('btn-secondary').addClass('btn-danger');
         }
     });
-
-    $(item).find('.remove-item').first().attr('data-row', rowId);
 
     return item;
 }
 
 //Remove a row from an admin page
-function removeAdminRow(element, parentClass) {
-    var parent = $(element).parents('.' + parentClass);
+function removeRow(element, rowClass) {
+    var parent = $(element).parents('.' + rowClass);
     var id = $(parent).find('.id').first().val();
     console.log(parent, id);
 
@@ -74,7 +71,24 @@ function removeAdminRow(element, parentClass) {
     $(parent).remove();
 
     //Hide the remove button if there is only one item in the list
-    if (!($('.' + parentClass).length > 1)) {
+    if (!($('.' + rowClass).length > 1)) {
         $('.remove-item').addClass('d-none');
     }
+}
+
+function renameRows(parentClass) {
+    //Iterate through children and renumber them
+    $('.' + parentClass + ' > div').each(function (key, element) {
+        //Set the correct id on the remove button
+        $(element).find('.remove-item').first().attr('data-row', key);
+
+        //Iterate through each of the elements and rename them
+        $(element).find('input, select').each(function (inputKey, input) {
+            //Change the input elements
+            if ($(element).is('[name]')) {
+                var name = $(element).attr('name').replace(/\[[\d]+\]/ig, '[' + rowId + ']');
+                $(element).attr('name', name);
+            }
+        });
+    });
 }

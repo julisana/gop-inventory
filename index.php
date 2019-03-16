@@ -33,28 +33,22 @@ $years = get_existing_years( $db );
                     </div>
                 </div>
 
-                <div class="row">&nbsp;</div>
-
                 <div class="row">
                     <div class="col-md-12">
-                        <ul>
-                            <li>
-                                <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
-                                    <a href="add.php">Add Inventory Page (Current Year)</a>
-                                <?php } else { ?>
-                                    Add Inventory Page (Current Year Not Started Yet)
-                                <?php } ?>
-                                <?php if ( !empty( $years ) ) { ?>
-                                    <ul>
-                                        <?php foreach ( $years as $year ) {
-                                            if ( $year != date( 'Y' ) ) {
-                                                echo '<li><a href="add.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
-                                            }
-                                        } ?>
-                                    </ul>
-                                <?php } ?>
-                            </li>
-                        </ul>
+                        <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
+                            <a href="add.php">Add Inventory Page (Current Year)</a>
+                        <?php } else { ?>
+                            Add Inventory Page (Current Year Not Started Yet)
+                        <?php } ?>
+                        <?php if ( !empty( $years ) ) { ?>
+                            <ul>
+                                <?php foreach ( $years as $year ) {
+                                    if ( $year != date( 'Y' ) ) {
+                                        echo '<li><a href="add.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
+                                    }
+                                } ?>
+                            </ul>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

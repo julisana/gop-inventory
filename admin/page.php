@@ -22,13 +22,16 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
 
     $error = false;
 
+//    echo "<pre>";
+//    print_r( $_REQUEST );
+//    echo "</pre>";
+
     foreach ( $_REQUEST[ 'inventory' ] as $inventoryItem ) {
         $inventoryItem = array_merge( $inventoryItem, $shared );
 
         try {
-            $inventory->setDB( $db )->save( $inventoryItem );
-        }
-        catch (Exception $e) {
+            $inventory->setDB( $db )->saveOrCreate( $inventoryItem );
+        } catch ( Exception $e ) {
             redirect( 'page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer . '&error=ERRORUPDATE' );
         }
     }
@@ -80,6 +83,10 @@ $first = $items[ $keys[ 0 ] ];
         <link rel="stylesheet" type="text/css" href="../styles/app.css" />
 
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+                crossorigin="anonymous"></script>
     </head>
     <body>
         <div id="container">
@@ -106,14 +113,16 @@ $first = $items[ $keys[ 0 ] ];
                         <div class="col-md-2 offset-md-3">
                             <div class="form-group">
                                 <label for="location">Location</label>
-                                <input type="text" class="form-control" id="location" name="location" value="<?php echo $first[ 'location' ]; ?>" required />
+                                <input type="text" class="form-control" id="location" name="location"
+                                       value="<?php echo $first[ 'location' ]; ?>" required />
                                 <input type="hidden" name="year" value="<?php echo $year; ?>" />
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="page">Page Number</label>
-                                <input type="number" class="form-control" id="page" name="page" value="<?php echo $page; ?>" required />
+                                <input type="number" class="form-control" id="page" name="page"
+                                       value="<?php echo $page; ?>" required />
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -138,13 +147,14 @@ $first = $items[ $keys[ 0 ] ];
                     <div class="inventory-items">
                         <?php if ( !empty( $items ) ) { ?>
                             <?php foreach ( $items as $index => $row ) {
-                                include( '../inventory-row.php' );
+                                include( 'inventory-admin-row.php' );
                             } ?>
                         <?php } ?>
                     </div>
 
                     <div class="row">
                         <div class="col-md-2">
+                            <input type="hidden" name="deleteIds" id="delete" value="" />
                             <input type="submit" class="form-control btn btn-primary" value="Save Changes" />
                         </div>
                     </div>
@@ -152,57 +162,24 @@ $first = $items[ $keys[ 0 ] ];
             </div>
         </div>
 
+        <script type="text/javascript" src="../scripts/app.js"></script>
         <script type="text/javascript">
-            function addRow(parentClass) {
-                var html = $(parentClass).last().html();
-                var rowId = parseInt($(html).find('.remove-item').first().attr('data-row'), 10) + 1;
-
-                var item = document.createElement('div');
-                item.setAttribute('class', 'row inventory-item');
-                item.innerHTML = html;
-
-                //If there are any values in any input or textarea, reset them.
-                $(item).find('input, select').each(function (key, element) {
-                    $(element).val('');
-
-                    if ($(element).hasClass('id')) {
-                        $(element).remove();
-                    }
-
-                    if ($(element).hasClass('code')) {
-                        $(element).attr('name', 'inventory[' + rowId + '][code]');
-                    } else if ($(element).hasClass('name')) {
-                        $(element).attr('name', 'inventory[' + rowId + '][name]')
-                    }
-                });
-
-                $(item).find('.remove-item').first().attr('data-row', rowId);
-
-                return item;
-            }
-
+            //Remove the line and record the ID in the delete input
             $(document).on('click', '.remove-item', function () {
-                var parent = $(this).parents('.inventory-item');
-                var id = $(parent).find('.id').first().val();
-
-                //Make sure the ID is defined. Newly added rows won't have an ID
-                if (typeof id !== 'undefined') {
-                    var deleteIds = [];
-                    if (document.getElementById('delete').value.length) {
-                        deleteIds = document.getElementById('delete').value.split(',');
-                    }
-
-                    deleteIds.push(id);
-                    document.getElementById('delete').value = deleteIds.join(',');
-                }
-
-                $(parent).remove();
+                removeRow(this, 'inventory-item');
+                renameRows('inventory-items');
             });
 
             //Generate a new line
-            $('.inventory-items').on('keyup', '.sell-price', function (event) {
-                if (event.key === 'Tab' && $(this).prop('name') === $('.sell-price').last().prop('name')) {
-                    $('.inventory-items').append(addRow('.inventory-item'));
+            $('.inventory-items').on('keydown', '.value', function (event) {
+                if (event.key === 'Tab' && $(this).prop('name') === $('.value').last().prop('name')) {
+                    $('.inventory-items').append(addRow('inventory-item'));
+                    renameRows('inventory-items');
+
+                    //Show the remove button if there is more than one item in the list
+                    if ($('.inventory-item').length > 1) {
+                        $('.remove-item').removeClass('d-none');
+                    }
                 }
             });
         </script>

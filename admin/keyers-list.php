@@ -136,13 +136,15 @@ foreach ( $results as $result ) {
         <script type="text/javascript">
             //Remove the line and record the ID in the delete input
             $(document).on('click', '.btn-danger.remove-item', function () {
-                removeAdminRow(this, 'keyer-item');
+                removeRow(this, 'keyer-item');
+                renameRows('keyers');
             });
 
             //Generate a new line via tab
             $('.keyers').on('keydown', '.name', function (event) {
                 if (event.key === 'Tab' && $(this).prop('name') === $('.name').last().prop('name')) {
-                    $('.keyers').append(addAdminRow('.keyer-item', 'keyers'));
+                    $('.keyers').append(addRow('keyer-item'));
+                    renameRows('keyers');
 
                     //Show the remove button if there is more than one item in the list
                     if ($('.keyer-item').length > 1) {
