@@ -38,7 +38,7 @@ if ( isset( $row[ 'id' ] ) && isset( $usedItems ) && in_array( $row[ 'id' ], $us
             <div class="input-group">
                 <input type="text" class="form-control name" name="manufacturers[<?php echo $index; ?>][name]"
                        value="<?php echo $row[ 'name' ]; ?>" />&nbsp;&nbsp;&nbsp;
-                <span class="btn <?php echo $used ? 'btn-secondary' : 'btn-danger' ?> remove-item "
+                <span class="btn <?php echo $used ? 'btn-secondary' : 'btn-danger' ?> remove-item <?php echo ( $index == 0 && count( $manufacturers ) == 1 ) ? 'd-none' : '' ?>"
                       data-row="<?php echo $index; ?>" <?php if ( $used ) { ?>data-toggle="popover"<?php } ?>>X</span>
             </div>
         </div>

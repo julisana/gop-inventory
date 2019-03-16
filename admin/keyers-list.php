@@ -25,12 +25,12 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     }
 
     if ( !empty( $_REQUEST[ 'deleteIds' ] ) ) {
-        foreach ( explode( ',', $_REQUEST[ 'deleteIds' ] ) as $deleteId ) {
-            try {
+        try {
+            foreach ( explode( ',', $_REQUEST[ 'deleteIds' ] ) as $deleteId ) {
                 $keyer->setDb( $db )->delete( $deleteId, $year );
-            } catch ( Exception $e ) {
-                redirect( 'keyers-list.php?year=' . $year . '&error=ERRORUPDATE' );
             }
+        } catch ( Exception $e ) {
+            redirect( 'keyers-list.php?year=' . $year . '&error=ERRORUPDATE' );
         }
     }
 

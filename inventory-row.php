@@ -88,7 +88,7 @@
                         <input type="number" class="form-control sell-price"
                                name="inventory[<?php echo $index; ?>][sell_price]" min="0.01" step="0.01" placeholder="0.00"
                                value="<?php echo $row[ 'sell_price' ]; ?>" />&nbsp;&nbsp;&nbsp;
-                        <span class="btn btn-danger remove-item" data-row="<?php echo $index; ?>">X</span>
+                        <span class="btn btn-danger remove-item <?php echo ( $index == 0 && count( $items ) == 1 ) ? 'd-none' : '' ?>" data-row="<?php echo $index; ?>">X</span>
                     </div>
                 </div>
             </div>

@@ -20,21 +20,21 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         try {
             $manufacturer->setDB( $db )->saveOrCreate( $manufacturerItem );
         } catch ( Exception $e ) {
-            redirect( 'manufacturer-list.php?year=' . $year . '&error=ERRORUPDATE' );
+            redirect( 'manufacturers-list.php?year=' . $year . '&error=ERRORUPDATE' );
         }
     }
 
     if ( !empty( $_REQUEST[ 'deleteIds' ] ) ) {
-        foreach ( explode( ',', $_REQUEST[ 'deleteIds' ] ) as $deleteId ) {
-            try {
+        try {
+            foreach ( explode( ',', $_REQUEST[ 'deleteIds' ] ) as $deleteId ) {
                 $manufacturer->setDb( $db )->delete( $deleteId, $year );
-            } catch ( Exception $e ) {
-                redirect( 'manufacturer-list.php?year=' . $year . '&error=ERRORUPDATE' );
             }
+        } catch ( Exception $e ) {
+            redirect( 'manufacturers-list.php?year=' . $year . '&error=ERRORUPDATE' );
         }
     }
 
-    redirect( 'manufacturer-list.php?year=' . $year );
+    redirect( 'manufacturers-list.php?year=' . $year );
 }
 
 $year = date( 'Y' );

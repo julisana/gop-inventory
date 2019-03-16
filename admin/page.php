@@ -22,15 +22,21 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
 
     $error = false;
 
-//    echo "<pre>";
-//    print_r( $_REQUEST );
-//    echo "</pre>";
-
     foreach ( $_REQUEST[ 'inventory' ] as $inventoryItem ) {
         $inventoryItem = array_merge( $inventoryItem, $shared );
 
         try {
             $inventory->setDB( $db )->saveOrCreate( $inventoryItem );
+        } catch ( Exception $e ) {
+            redirect( 'page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer . '&error=ERRORUPDATE' );
+        }
+    }
+
+    if ( !empty( $_REQUEST[ 'deleteIds' ] ) ) {
+        try {
+            foreach ( explode( ',', $_REQUEST[ 'deleteIds' ] ) as $deleteId ) {
+                $inventory->setDb( $db )->delete( $deleteId, $year );
+            }
         } catch ( Exception $e ) {
             redirect( 'page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer . '&error=ERRORUPDATE' );
         }
