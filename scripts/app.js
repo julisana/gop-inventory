@@ -85,9 +85,9 @@ function renameRows(parentClass) {
         //Iterate through each of the elements and rename them
         $(element).find('input, select').each(function (inputKey, input) {
             //Change the input elements
-            if ($(element).is('[name]')) {
-                var name = $(element).attr('name').replace(/\[[\d]+\]/ig, '[' + rowId + ']');
-                $(element).attr('name', name);
+            if ($(input).is('[name]')) {
+                var name = $(input).attr('name').replace(/\[[\d]+\]/ig, '[' + key + ']');
+                $(input).attr('name', name);
             }
         });
     });
