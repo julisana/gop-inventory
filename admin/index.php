@@ -43,9 +43,30 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                             <a href="#" class="btn btn-success" data-toggle="modal" data-target="#new-year">Start New Year (<?php echo date( 'Y' ) ?>)</a>
                         <?php } else { ?>
                             <span class="btn btn-success disabled">Start New Year (<?php echo date( 'Y' ) ?> Already Started)</span>
-                        <?php } ?>
+                        <?php } ?><br /><br />
+                        <a href="reports/index.php" class="btn btn-primary">All Reports</a>
                     </div>
                 </div>
+
+                <!--<div class="row">
+                    <div class="col-md-12">
+                        <h2>Reports</h2>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        Page Number Report<br />
+                        Print Count Sheet Verification Report<br />
+                        Inventory Valuation Report
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>Records</h2>
+                    </div>
+                </div>-->
 
                 <div class="row">
                     <div class="col-md-4">
