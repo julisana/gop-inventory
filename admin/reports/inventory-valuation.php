@@ -130,14 +130,14 @@ $totalValue = 0;
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td>Grand Total</td>
                                     <td></td>
+                                    <td></td>
+                                    <td>Grand Total</td>
                                     <td><?php echo '$' . number_format( $totalList, 2 ); ?></td>
                                     <td></td>
                                     <td><?php echo '$' . number_format( $totalSell, 2 ); ?></td>
                                     <td></td>
                                     <td><?php echo '$' . number_format( $totalCost, 2 ); ?></td>
-                                    <td></td>
                                     <td><?php echo '$' . number_format( $totalValue, 2 ); ?></td>
                                 </tr>
                             </tbody>
