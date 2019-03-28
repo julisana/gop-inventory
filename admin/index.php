@@ -33,92 +33,68 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
             <div class="content p-5">
                 <div class="row header">
                     <div class="col-md-4">
-                        <img src="../img/General-Office-Products-Logo.png" alt="logo" />
+                        <img src="../img/General-Office-Products-Logo.png" alt="logo" width="200" />
                     </div>
                     <div class="col-md-4 text-center">
                         <h2>Admin Pages</h2>
                     </div>
-                    <div class="col-md-4 text-right">
+                    <div class="col-md-4 text-right side-nav">
                         <?php if ( !in_array( date( 'Y' ), $years ) ) { ?>
                             <a href="#" class="btn btn-success" data-toggle="modal" data-target="#new-year">Start New Year (<?php echo date( 'Y' ) ?>)</a>
                         <?php } else { ?>
                             <span class="btn btn-success disabled">Start New Year (<?php echo date( 'Y' ) ?> Already Started)</span>
-                        <?php } ?><br /><br />
+                        <?php } ?><br />
                         <a href="reports/index.php" class="btn btn-primary">All Reports</a>
                     </div>
                 </div>
 
-                <!--<div class="row">
-                    <div class="col-md-12">
-                        <h2>Reports</h2>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        Page Number Report<br />
-                        Print Count Sheet Verification Report<br />
-                        Inventory Valuation Report
-                    </div>
-                </div>
-
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>Records</h2>
-                    </div>
-                </div>-->
+                        <table class="table table-striped table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th width="25%" class="text-center">View Inventory Page List</th>
+                                    <th width="25%" class="text-center">View Keyers</th>
+                                    <th width="25%" class="text-center">View Manufacturers</th>
+                                    <th width="25%" class="text-center">Cost Codes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
+                                    <tr>
+                                        <td class="text-center">
+                                            <a href="inventory-page-list.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="keyers-list.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="manufacturers-list.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="cost-code-list.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
-                            <a href="inventory-page-list.php">View Inventory Page List (Current Year)</a>
-                        <?php } else { ?>
-                            View Inventory Page List (Current Year Not Started Yet)
-                        <?php } ?>
-                        <?php if ( !empty( $years ) ) { ?>
-                            <ul>
-                                <?php foreach ( $years as $year ) {
-                                    if ( $year == date( 'Y' ) ) {
-                                        continue;
+                                <?php
+                                if ( count( $years ) > 1 ) {
+                                    echo '<tr>';
+                                    foreach ( $years as $year ) {
+                                        if ( $year == date( 'Y' ) ) {
+                                            continue;
+                                        }
+
+                                        echo '<td class="text-center"><a href="inventory-page-list.php?year=' . $year . '">' . $year . '</a></td>';
+                                        echo '<td class="text-center"><a href="keyers-list.php?year=' . $year . '">' . $year . '</a></td>';
+                                        echo '<td class="text-center"><a href="manufacturers-list.php?year=' . $year . '">' . $year . '</a></td>';
+                                        echo '<td class="text-center"><a href="cost-code-list.php?year=' . $year . '">' . $year . '</a></td>';
                                     }
-                                    echo '<li><a href="inventory-page-list.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
-                                } ?>
-                            </ul>
-                        <?php } ?>
-                    </div>
-                    <div class="col-md-4">
-                        <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
-                            <a href="keyers-list.php">View Keyers (Current Year)</a>
-                        <?php } else { ?>
-                            View Keyers (Current Year Not Started Yet)
-                        <?php } ?>
-                        <?php if ( !empty( $years ) ) { ?>
-                            <ul>
-                                <?php foreach ( $years as $year ) {
-                                    if ( $year == date( 'Y' ) ) {
-                                        continue;
-                                    }
-                                    echo '<li><a href="keyers-list.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
-                                } ?>
-                            </ul>
-                        <?php } ?>
-                    </div>
-                    <div class="col-md-4">
-                        <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
-                            <a href="manufacturers-list.php">View Manufacturers (Current Year)</a>
-                        <?php } else { ?>
-                            View Manufacturers (Current Year Not Started Yet)
-                        <?php } ?>
-                        <?php if ( !empty( $years ) ) { ?>
-                            <ul>
-                                <?php foreach ( $years as $year ) {
-                                    if ( $year == date( 'Y' ) ) {
-                                        continue;
-                                    }
-                                    echo '<li><a href="manufacturers-list.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
-                                } ?>
-                            </ul>
-                        <?php } ?>
+                                    echo '</tr>';
+                                }
+                                ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -132,8 +108,8 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                     </div>
                     <div class="modal-body">
                         <p>
-                            Starting a new year will copy the keyers and manufacturers from the previous year so you aren't
-                            starting from scratch. You can modify these values to be whatever you need.
+                            Starting a new year will copy the keyers, manufacturers, and cost codes from the previous year
+                            so you aren't starting from scratch. You can modify these values to be whatever you need.
                         </p>
 
                         <p>

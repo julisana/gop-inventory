@@ -58,7 +58,7 @@ $manufacturers = get_manufacturers( $year, $db );
             <div class="content p-5">
                 <div class="row header">
                     <div class="col-md-4">
-                        <img src="img/General-Office-Products-Logo.png" alt="logo" />
+                        <img src="img/General-Office-Products-Logo.png" alt="logo" width="200" />
                     </div>
                     <div class="col-md-4 text-center">
                         <h2>Inventory <?php echo $year; ?> - Add Page</h2>
@@ -88,7 +88,7 @@ $manufacturers = get_manufacturers( $year, $db );
                                 <label for="keyer">Keyer</label>
                                 <select class="form-control" id="keyer" name="keyer" required>
                                     <option value="">Select One</option>
-                                    <?php foreach ( get_keyers( $year, $db ) as $key => $value ) {
+                                    <?php foreach ( $keyers as $key => $value ) {
                                         echo '<option value="' . $key . '">' . $value . '</option>' . "\n";
                                     } ?>
                                 </select>

@@ -47,7 +47,7 @@
                     <select class="form-control manufacturer" name="inventory[<?php echo $index; ?>][manufacturer]"
                             required>
                         <option <?php echo $row[ 'manufacturer' ] == '' ? 'selected' : ''; ?> value="">Select One</option>
-                        <?php foreach ( get_manufacturers( $year, $db ) as $key => $value ) {
+                        <?php foreach ( $manufacturers as $key => $value ) {
                             echo '<option value="' . $key . '"' . ( $row[ 'manufacturer' ] == $key ? ' selected' : '' ) . '>' . $value . '</option>' . "\n";
                         } ?>
                     </select>
@@ -97,13 +97,29 @@
                 </div>
             </div>
         </div>
-        <?php if ( isset( $row[ 'cost' ] ) ) { ?>
+        <?php if ( isset( $costCodes ) ) { ?>
             <div class="row">
                 <div class="offset-md-1 col-md-1">
+                    <div class="form-group">
+                        <label for="cost-code">Cost Code</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select name="inventory[<?php echo $index; ?>][cost_code]" class="form-control cost-code">
+                            <option value="">Select One</option>
+                            <?php foreach ( $costCodes as $key => $value ) {
+                                echo '<option value="' . $key . '"' . ( $row[ 'cost_code' ] == $key ? ' selected' : '' ) . '>' . $value . '</option>' . "\n";
+                            } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-1">
                     <div class="form-group">
                         <label for="cost">Cost</label>
                     </div>
                 </div>
+
                 <div class="col-md-2">
                     <div class="form-group">
                         <div class="input-group">
@@ -114,18 +130,6 @@
                                    name="inventory[<?php echo $index; ?>][cost]" min="0.00" step="0.01" placeholder="0.00"
                                    value="<?php echo $row[ 'cost' ]; ?>" />
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-md-1">
-                    <div class="form-group">
-                        <label for="cost-code">Cost Code</label>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input type="text" class="form-control cost-code" name="inventory[<?php echo $index; ?>][cost_code]"
-                               value="<?php echo $row[ 'cost_code' ]; ?>" />
                     </div>
                 </div>
 

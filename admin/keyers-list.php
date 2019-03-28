@@ -78,13 +78,13 @@ foreach ( $results as $result ) {
             <div class="content p-5">
                 <div class="row header">
                     <div class="col-md-4">
-                        <img src="../img/General-Office-Products-Logo.png" alt="logo" />
+                        <img src="../img/General-Office-Products-Logo.png" alt="logo" width="200" />
                     </div>
                     <div class="col-md-4 text-center">
                         <h2>Keyers List - <?php echo $year; ?></h2>
                     </div>
-                    <div class="col-md-4 text-right">
-                        <a href="index.php">Admin Home</a><br />
+                    <div class="col-md-4 text-right side-nav">
+                        <a href="index.php" class="btn btn-success">Admin Home</a><br />
                     </div>
                 </div>
 
@@ -97,16 +97,16 @@ foreach ( $results as $result ) {
                     <div class="labels">
                         <div class="row">
                             <div class="col-md-1">
-                                <label for="line">ID</label>
+                                <label for="id">ID</label>
                             </div>
                             <div class="col-md-1">
                                 <div class="form-group">
-                                    <label for="line">Code</label>
+                                    <label for="code">Code</label>
                                 </div>
                             </div>
                             <div class="col-md-1">
                                 <div class="form-group">
-                                    <label for="is-new">Name</label>
+                                    <label for="name">Name</label>
                                 </div>
                             </div>
                         </div>

@@ -8,12 +8,12 @@
 
 namespace GOP\Inventory\Models;
 
-class Keyer extends AbstractModel
+class CostCode extends AbstractModel
 {
     /**
      * @var string
      */
-    protected $table = 'keyer';
+    protected $table = 'cost_code';
 
     /**
      * @return string

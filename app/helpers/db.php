@@ -34,7 +34,7 @@ if ( !function_exists( 'get_keyers' ) ) {
     /**
      * Get a list of keyers from the database for the specified year.
      *
-     * @param string $year
+     * @param string    $year
      * @param DB|string $db
      *
      * @return array
@@ -63,7 +63,7 @@ if ( !function_exists( 'get_manufacturers' ) ) {
     /**
      * Get a list of manufacturers from the database for the specified year.
      *
-     * @param string $year
+     * @param string    $year
      * @param DB|string $db
      *
      * @return array
@@ -88,6 +88,35 @@ if ( !function_exists( 'get_manufacturers' ) ) {
     }
 }
 
+if ( !function_exists( 'get_cost_codes' ) ) {
+    /**
+     * Get a list of cost codes from the database for the specified year.
+     *
+     * @param string    $year
+     * @param DB|string $db
+     *
+     * @return array
+     */
+    function get_cost_codes( $year, $db = '' )
+    {
+        if ( !$db instanceof DB ) {
+            $db = new DB();
+        }
+
+        $codes = [];
+        $results = $db->table( 'cost_code' )
+            ->fields( [ 'id', 'name' ] )
+            ->where( [ 'year' => $year ] )
+            ->select();
+
+        foreach ( $results as $result ) {
+            $codes[ $result[ 'id' ] ] = $result[ 'name' ];
+        }
+
+        return $codes;
+    }
+}
+
 if ( !function_exists( 'get_existing_years' ) ) {
     /**
      * Get a list of existing years from the database.
@@ -105,7 +134,7 @@ if ( !function_exists( 'get_existing_years' ) ) {
         $years = [];
         $results = $db->table( 'keyer' )
             ->fields( [ 'distinct year' ] )
-            ->orderBy( 'year asc' )
+            ->orderBy( 'year desc' )
             ->select();
 
         foreach ( $results as $result ) {
@@ -173,6 +202,10 @@ if ( !function_exists( 'start_year' ) ) {
                 ->fields( [ 'code', 'name' ] )
                 ->where( [ 'year' => $previousYear ] )
                 ->select();
+            $costCodes = $db->table( 'cost_code' )
+                ->fields( [ 'code', 'name', 'percentage', 'field' ] )
+                ->where( [ 'year' => $previousYear ] )
+                ->select();
 
             foreach ( $manufacturers as $manufacturer ) {
                 $manufacturer[ 'year' ] = $year;
@@ -183,8 +216,12 @@ if ( !function_exists( 'start_year' ) ) {
                 $keyer[ 'year' ] = $year;
                 $db->table( 'keyer' )->fields( $keyer )->insert();
             }
-        }
-        catch ( Exception $e ) {
+
+            foreach ( $costCodes as $code ) {
+                $code[ 'year' ] = $year;
+                $db->table( 'cost_code' )->fields( $code )->insert();
+            }
+        } catch ( Exception $e ) {
             return false;
         }
 

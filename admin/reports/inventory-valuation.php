@@ -73,14 +73,14 @@ $totalValue = 0;
             <div class="content p-5">
                 <div class="row header">
                     <div class="col-md-4">
-                        <img src="../../img/General-Office-Products-Logo.png" alt="logo" />
+                        <img src="../../img/General-Office-Products-Logo.png" alt="logo" width="200" />
                     </div>
                     <div class="col-md-4 text-center">
                         <h2>Inventory Valuation Report (<?php echo $year; ?>)</h2>
                     </div>
-                    <div class="col-md-4 text-right">
-                        <a href="index.php">Admin Home</a><br />
-                        <a href="index.php">Reports Home</a><br />
+                    <div class="col-md-4 text-right side-nav">
+                        <a href="index.php" class="btn btn-success">Admin Home</a><br />
+                        <a href="index.php" class="btn btn-primary">Reports Home</a><br />
                     </div>
                 </div>
 

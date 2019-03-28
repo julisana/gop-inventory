@@ -3,38 +3,38 @@
 require_once( './../config.php' );
 
 use GOP\Inventory\DB;
-use GOP\Inventory\Models\Manufacturer;
+use GOP\Inventory\Models\CostCode;
 
 $db = new DB();
 
 if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
-    $manufacturer = new Manufacturer();
+    $costCode = new CostCode();
     $year = $_REQUEST[ 'year' ];
     $shared = [
         'year' => $year,
     ];
 
-    foreach ( $_REQUEST[ 'manufacturers' ] as $manufacturerItem ) {
-        $manufacturerItem = array_merge( $manufacturerItem, $shared );
+    foreach ( $_REQUEST[ 'codes' ] as $codeItem ) {
+        $codeItem = array_merge( $codeItem, $shared );
 
         try {
-            $manufacturer->setDB( $db )->saveOrCreate( $manufacturerItem );
+            $costCode->setDB( $db )->save( $codeItem );
         } catch ( Exception $e ) {
-            redirect( 'manufacturers-list.php?year=' . $year . '&error=ERRORUPDATE' );
+            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORUPDATE' );
         }
     }
 
     if ( !empty( $_REQUEST[ 'deleteIds' ] ) ) {
         try {
             foreach ( explode( ',', $_REQUEST[ 'deleteIds' ] ) as $deleteId ) {
-                $manufacturer->setDb( $db )->delete( $deleteId, $year );
+                $costCode->setDb( $db )->delete( $deleteId, $year );
             }
         } catch ( Exception $e ) {
-            redirect( 'manufacturers-list.php?year=' . $year . '&error=ERRORUPDATE' );
+            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORUPDATE' );
         }
     }
 
-    redirect( 'manufacturers-list.php?year=' . $year );
+    redirect( 'cost-code-list.php?year=' . $year );
 }
 
 $year = date( 'Y' );
@@ -42,25 +42,26 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
     $year = $_REQUEST[ 'year' ];
 }
 
-$manufacturers = $db->table( 'manufacturer' )
+$costCodes = $db->table( 'cost_code' )
     ->where( [ 'year' => $year ] )
     ->select();
 
 $results = $db->table( 'inventory' )
-    ->fields( [ 'distinct manufacturer' ] )
+    ->fields( [ 'distinct cost_code' ] )
     ->where( [ 'year' => $year ] )
     ->select();
 
 $usedItems = [];
 foreach ( $results as $result ) {
-    $usedItems[] = $result[ 'manufacturer' ];
+    $usedItems[] = $result[ 'cost_code' ];
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Manufacturers List</title>
+        <title>Cost Codes List</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css"
               href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
@@ -80,7 +81,7 @@ foreach ( $results as $result ) {
                         <img src="../img/General-Office-Products-Logo.png" alt="logo" width="200" />
                     </div>
                     <div class="col-md-4 text-center">
-                        <h2>Manufacturers List - <?php echo $year; ?></h2>
+                        <h2>Cost Codes List - <?php echo $year; ?></h2>
                     </div>
                     <div class="col-md-4 text-right side-nav">
                         <a href="index.php" class="btn btn-success">Admin Home</a><br />
@@ -90,7 +91,7 @@ foreach ( $results as $result ) {
                 <div class="row">&nbsp;</div>
 
                 <?php include( '../errors.php' ); ?>
-                <form action="manufacturers-list.php" method="post">
+                <form action="cost-code-list.php" method="post">
                     <input type="hidden" name="year" value="<?php echo $year ?>" />
 
                     <div class="labels">
@@ -103,19 +104,36 @@ foreach ( $results as $result ) {
                                     <label for="code">Code</label>
                                 </div>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                 </div>
                             </div>
-                        </div>
 
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label for="percentage">Percentage</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="is_decrease">Increase/Decrease</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="field">Field</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="manufacturers">
-                        <?php if ( !empty( $manufacturers ) ) { ?>
-                            <?php foreach ( $manufacturers as $row ) {
-                                include( 'manufacturer-row.php' );
+                    <div class="cost-codes">
+                        <?php if ( !empty( $costCodes ) ) { ?>
+                            <?php foreach ( $costCodes as $index => $row ) {
+                                include( 'cost-code-row.php' );
                             } ?>
                         <?php } ?>
                     </div>
@@ -135,18 +153,18 @@ foreach ( $results as $result ) {
         <script type="text/javascript">
             //Remove the line and record the ID in the delete input
             $(document).on('click', '.btn-danger.remove-item', function () {
-                removeRow(this, 'manufacturer-item');
-                renameRows('manufacturers');
+                removeRow(this, 'cost-code-item');
+                renameRows('cost-codes');
             });
 
             //Generate a new line via tab
-            $('.manufacturers').on('keydown', '.name', function (event) {
+            $('.cost-codes').on('keydown', '.name', function (event) {
                 if (event.key === 'Tab' && $(this).prop('name') === $('.name').last().prop('name')) {
-                    $('.manufacturers').append(addRow('manufacturer-item'));
-                    renameRows('manufacturers');
+                    $('.cost-codes').append(addRow('cost-code-item'));
+                    renameRows('cost-codes');
 
                     //Show the remove button if there is more than one item in the list
-                    if ($('.manufacturer-item').length > 1) {
+                    if ($('.cost-code-item').length > 1) {
                         $('.remove-item').removeClass('d-none');
                     }
                 }

@@ -10,6 +10,7 @@ require_once( './../config.php' );
 
 use GOP\Inventory\DB;
 use GOP\Inventory\Models\Keyer;
+use GOP\Inventory\Models\CostCode;
 use GOP\Inventory\Models\Manufacturer;
 
 $db = new DB();
@@ -30,6 +31,8 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     $keyer->setDB( $db );
     $manufacturer = new Manufacturer();
     $manufacturer->setDB( $db );
+    $costCode = new CostCode();
+    $costCode->setDb( $db );
 
     $keyers = $db->table( 'keyer' )
         ->fields( [ 'code', 'name' ] )
@@ -41,7 +44,12 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         ->where( [ 'year' => $previousYear ] )
         ->select();
 
-    //Create Keyers and Manufacturers from the previous years
+    $costCodes = $db->table( 'cost_code' )
+        ->fields( [ 'code', 'name', 'percentage', 'is_decrease', 'field' ] )
+        ->where( [ 'year' => $previousYear ] )
+        ->select();
+
+    //Create items from the previous years
     foreach ( $keyers as $keyerItem ) {
         $keyerItem[ 'year' ] = date( 'Y' );
         $keyer->create( $keyerItem );
@@ -50,6 +58,11 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     foreach ( $manufacturers as $manufacturerItem ) {
         $manufacturerItem[ 'year' ] = date( 'Y' );
         $manufacturer->create( $manufacturerItem );
+    }
+
+    foreach ( $costCodes as $codeItem ) {
+        $codeItem[ 'year' ] = date( 'Y' );
+        $costCode->create( $codeItem );
     }
 }
 
