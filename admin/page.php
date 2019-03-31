@@ -25,6 +25,11 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     foreach ( $_REQUEST[ 'inventory' ] as $inventoryItem ) {
         $inventoryItem = array_merge( $inventoryItem, $shared );
 
+        //Don't save a value to cost_code if there's no actual value
+        if ( isset( $inventoryItem[ 'cost_code' ] ) && $inventoryItem[ 'cost_code' ] === 0 ) {
+            $inventoryItem[ 'cost_code' ] = null;
+        }
+
         try {
             $inventory->setDB( $db )->saveOrCreate( $inventoryItem );
         } catch ( Exception $e ) {
@@ -98,7 +103,7 @@ $first = $items[ $keys[ 0 ] ];
     <body>
         <div id="container">
             <div class="content p-5">
-                <div class="row header">
+                <div class="row header mb-4">
                     <div class="col-md-4">
                         <img src="../img/General-Office-Products-Logo.png" alt="logo" width="200" />
                     </div>

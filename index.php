@@ -24,7 +24,7 @@ $years = get_existing_years( $db );
     <body>
         <div id="container">
             <div class="content p-5">
-                <div class="row header">
+                <div class="row header mb-4">
                     <div class="col-md-4">
                         <img src="img/General-Office-Products-Logo.png" alt="logo" width="200" />
                     </div>

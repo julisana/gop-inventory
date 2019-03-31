@@ -1,11 +1,24 @@
-.header {
-    margin-bottom: 40px;
-}
-
 span.form-control.disabled {
     background-color: #e9ecef;
 }
 
 div.side-nav * {
     margin-bottom: 5px;
+}
+
+@media print {
+    .page-break {
+        display: block !important;
+        border: none !important;
+        float: none !important;
+        position: static !important;
+        page-break-after: always !important;
+    }
+
+    .row.header.d-none {
+        display: flex !important;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
 }
