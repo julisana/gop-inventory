@@ -177,7 +177,7 @@ $grandTotal = 0;
                             <thead>
                                 <tr>
                                     <th>Cost Code</th>
-                                    <th>Page Count</th>
+                                    <th>Row Count</th>
                                     <th>Total List</th>
                                     <th>Total Sell</th>
                                     <th>Total Cost</th>
@@ -205,21 +205,6 @@ $grandTotal = 0;
                 </div>
             </div>
         </div>
-
-        <script type="text/javascript">
-            // window.onbeforeprint = function() {
-            //     $('.row.header').removeClass('d-none');
-            // };
-            // var mediaQueryList = window.matchMedia('print');
-            // mediaQueryList.addListener(function(mql) {
-            //     if(mql.matches) {
-            //         console.log('webkit equivalent of onbeforeprint');
-            //     }
-            // });
-            // window.onafterprint = function() {
-            //     $('.row.header:not(:first)').addClass('d-none');
-            // };
-        </script>
     </body>
 </html>
 
