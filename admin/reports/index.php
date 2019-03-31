@@ -112,7 +112,7 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <form action="update-valuation.php" method="post">
+                        <form action="update-valuation.php" method="get">
                             <input type="hidden" name="year" value="" />
                             <input type="submit" class="btn btn-danger" value="Update" />
                         </form>
