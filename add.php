@@ -64,7 +64,7 @@ $manufacturers = get_manufacturers( $year, $db );
                         <h2>Inventory <?php echo $year; ?> - Add Page</h2>
                     </div>
                     <div class="col-md-4 text-right">
-                        <a href="index.php">Home</a>
+                        <a href="index.php" class="btn btn-success">Home</a>
                     </div>
                 </div>
                 <form action="add.php" method="post">

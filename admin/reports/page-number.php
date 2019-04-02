@@ -51,9 +51,9 @@ $chunk3 = array_slice( $pages, $offset, count( $pages ) / 3 );
                     <div class="col-md-4 text-center">
                         <h2>Page Number Report (<?php echo $year; ?>)</h2>
                     </div>
-                    <div class="col-md-4 text-right side-nav">
+                    <div class="col-md-4 text-right side-nav d-print-none">
                         <a href="index.php" class="btn btn-success">Admin Home</a><br />
-                        <a href="index.php" class="btn btn-parimary">Reports Home</a><br />
+                        <a href="index.php" class="btn btn-primary">Reports Home</a><br />
                     </div>
                 </div>
 

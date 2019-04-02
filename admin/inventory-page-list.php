@@ -39,7 +39,7 @@ $keyers = get_keyers( $year, $db );
                         <h2>Inventory Pages - <?php echo $year; ?></h2>
                     </div>
                     <div class="col-md-4 text-right side-nav">
-                        <a href="index.php" class="btn-success">Admin Home</a><br />
+                        <a href="index.php" class="btn btn-success">Admin Home</a><br />
                     </div>
                 </div>
 
