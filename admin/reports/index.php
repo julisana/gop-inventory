@@ -48,10 +48,9 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                         <table class="table table-striped table-hover table-sm">
                             <thead>
                                 <tr>
-                                    <th width="25%" class="text-center">Page Number Report</th>
-                                    <th width="25%" class="text-center">Count Sheet Verification Report</th>
-                                    <th width="25%" class="text-center">Update Valuation Field</th>
-                                    <th width="25%" class="text-center">Inventory Valuation Report</th>
+                                    <th width="33%" class="text-center">Page Number Report</th>
+                                    <th width="33%" class="text-center">Count Sheet Verification Report</th>
+                                    <th width="33%" class="text-center">Inventory Valuation Report</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,9 +61,6 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                                         </td>
                                         <td class="text-center">
                                             <a href="count-sheet-verification.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="update-valuation.php" data-toggle="modal" data-target="#update-valuation" data-year="<?php echo date( 'Y' ) ?>"><?php echo date( 'Y' ) ?> (Current Year)</a>
                                         </td>
                                         <td class="text-center">
                                             <a href="inventory-valuation.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
@@ -82,7 +78,6 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
 
                                         echo '<td class="text-center"><a href="page-number.php?year=' . $year . '">' . $year . '</a></td>';
                                         echo '<td class="text-center"><a href="count-sheet-verification.php?year=' . $year . '">' . $year . '</a></td>';
-                                        echo '<td class="text-center"><a href="update-valuation.php?year=' . $year . '" data-toggle="modal" data-target="#update-valuation" data-year="' . $year . '">' . $year . '</a></td>';
                                         echo '<td class="text-center"><a href="inventory-valuation.php?year=' . $year . '">' . $year . '</a></td>';
                                     }
                                     echo '</tr>';

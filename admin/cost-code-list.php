@@ -44,6 +44,7 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
 
 $costCodes = $db->table( 'cost_code' )
     ->where( [ 'year' => $year ] )
+    ->orderBy( 'name asc' )
     ->select();
 
 $results = $db->table( 'inventory' )
@@ -97,9 +98,6 @@ foreach ( $results as $result ) {
                     <div class="labels">
                         <div class="row">
                             <div class="col-md-1">
-                                <label for="id">ID</label>
-                            </div>
-                            <div class="col-md-1">
                                 <div class="form-group">
                                     <label for="code">Code</label>
                                 </div>
@@ -118,12 +116,6 @@ foreach ( $results as $result ) {
 
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="is_decrease">Increase/Decrease</label>
-                                </div>
-                            </div>
-
-                            <div class="col-md-2">
-                                <div class="form-group">
                                     <label for="field">Field</label>
                                 </div>
                             </div>
@@ -135,7 +127,9 @@ foreach ( $results as $result ) {
                             <?php foreach ( $costCodes as $index => $row ) {
                                 include( 'cost-code-row.php' );
                             } ?>
-                        <?php } ?>
+                        <?php } else {
+                            include( 'cost-code-row.php' );
+                        } ?>
                     </div>
 
                     <div class="row">

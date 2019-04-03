@@ -48,9 +48,24 @@ $results = $db->table( 'inventory' )
     ->where( [ 'year' => $year ] )
     ->select();
 
+$codes = [];
+$rows = $db->table( 'cost_code' )
+    ->fields( [ 'id', 'code', 'percentage', 'field' ] )
+    ->where( [ 'year' => $year ] )
+    ->select();
+foreach ( $rows as $row ) {
+    $codes[ $row[ 'id' ] ] = [ 'code' => $row[ 'code' ], 'percentage' => $row[ 'percentage' ], 'field' => $row[ 'field' ] ];
+}
+
 $costCodes = [];
 foreach ( $results as $row ) {
-    $costCodes[ $row[ 'cost_code' ] ] = [ 'count' => 0, 'totalList' => 0, 'totalSell' => 0, 'totalCost' => 0, 'totalValue' => 0 ];
+    $costCodes[ $row[ 'cost_code' ] ] = [
+        'count' => 0,
+        'total_list_price' => 0,
+        'total_sell_price' => 0,
+        'total_cost' => 0,
+        'total_value' => 0,
+    ];
 }
 
 $grandTotal = 0;
@@ -90,9 +105,12 @@ $grandTotal = 0;
                         <div class="col-md-4 text-center">
                             <h2>Inventory Valuation Report (<?php echo $year; ?>)</h2>
                         </div>
-                        <div class="col-md-4 text-right side-nav d-print-none">
-                            <a href="index.php" class="btn btn-success">Admin Home</a><br />
-                            <a href="index.php" class="btn btn-primary">Reports Home</a><br />
+                        <div class="col-md-4 text-right side-nav">
+                            <?php echo date( 'm/d/Y h:i a' ) ?><br />
+                            <div class="d-print-none">
+                                <a href="../index.php" class="btn btn-success">Admin Home</a>&nbsp;&nbsp;
+                                <a href="index.php" class="btn btn-primary">Reports Home</a><br />
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -118,16 +136,27 @@ $grandTotal = 0;
                                 <tbody>
                                     <?php foreach ( $inventory as $row ) { ?>
                                         <?php
-                                            if ( $row[ 'cost_code' ] != $costCode ) { continue; }
+                                        if ( $row[ 'cost_code' ] != $costCode ) {
+                                            continue;
+                                        }
+                                        $code = isset( $codes[ $costCode ] ) ? $codes[ $costCode ][ 'code' ] : '';
 
-                                            $costCodes[ $costCode ][ 'count' ]++;
-                                            $costCodes[ $costCode ][ 'totalList' ] += ( $row[ 'quantity' ] * $row[ 'list_price' ] );
-                                            $costCodes[ $costCode ][ 'totalSell' ] += ( $row[ 'quantity' ] * $row[ 'sell_price' ] );
-                                            $costCodes[ $costCode ][ 'totalCost' ] += ( $row[ 'quantity' ] * $row[ 'cost' ] );
-                                            $costCodes[ $costCode ][ 'totalValue' ] += ( $row[ 'value' ] );
+                                        $value = 0;
+                                        if ( !empty( $code ) ) {
+                                            $percentage = abs( $codes[ $costCode ][ 'percentage' ] );
+                                            $field = $codes[ $costCode ][ 'field' ];
+
+                                            $value = ( $row[ 'quantity' ] * $row[ $field ] ) * $percentage;
+                                        }
+
+                                        $costCodes[ $costCode ][ 'count' ]++;
+                                        $costCodes[ $costCode ][ 'total_list_price' ] += ( $row[ 'quantity' ] * $row[ 'list_price' ] );
+                                        $costCodes[ $costCode ][ 'total_sell_price' ] += ( $row[ 'quantity' ] * $row[ 'sell_price' ] );
+                                        $costCodes[ $costCode ][ 'total_cost' ] += ( $row[ 'quantity' ] * $row[ 'cost' ] );
+                                        $costCodes[ $costCode ][ 'total_value' ] += $value;
                                         ?>
                                         <tr>
-                                            <td><?php echo $row[ 'cost_code' ]; ?></td>
+                                            <td><?php echo $code; ?></td>
                                             <td><?php echo $row[ 'page' ]; ?></td>
                                             <td><?php echo $manufacturers[ $row[ 'manufacturer' ] ] ?></td>
                                             <td><?php echo $row[ 'product_id' ]; ?></td>
@@ -139,24 +168,25 @@ $grandTotal = 0;
                                             <td><?php echo '$' . number_format( $row[ 'quantity' ] * $row[ 'sell_price' ], 2 ); ?></td>
                                             <td><?php echo '$' . number_format( $row[ 'cost' ], 2 ); ?></td>
                                             <td><?php echo '$' . number_format( $row[ 'quantity' ] * $row[ 'cost' ], 2 ); ?></td>
-                                            <td><?php echo '$' . number_format( $row[ 'value' ], 2 ); ?></td>
+                                            <td><?php echo '$' . number_format( $value, 2 ); ?></td>
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <td colspan="7" class="text-right">Total for cost code '<?php echo $costCode; ?>'</td>
-                                        <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'totalList' ], 2 ); ?></td>
+                                        <td colspan="7" class="text-right">Total for cost code '<?php echo $code; ?>'
+                                        </td>
+                                        <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'total_list_price' ], 2 ); ?></td>
                                         <td></td>
-                                        <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'totalSell' ], 2 ); ?></td>
+                                        <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'total_sell_price' ], 2 ); ?></td>
                                         <td></td>
-                                        <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'totalCost' ], 2 ); ?></td>
-                                        <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'totalValue' ], 2 ); ?></td>
+                                        <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'total_cost' ], 2 ); ?></td>
+                                        <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'total_value' ], 2 ); ?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="page-break d-none"></div>
-                    <?php $grandTotal .= $costCodes[ $costCode ][ 'totalValue' ]; ?>
+                    <div class="page-break d-print-none row">&nbsp;</div>
+                    <?php $grandTotal .= $costCodes[ $costCode ][ 'total_value' ]; ?>
                 <?php } ?>
 
                 <div class="row header mb-4 d-none">
@@ -166,9 +196,8 @@ $grandTotal = 0;
                     <div class="col-md-4 text-center">
                         <h2>Inventory Valuation Report (<?php echo $year; ?>)</h2>
                     </div>
-                    <div class="col-md-4 text-right side-nav d-print-none">
-                        <a href="index.php" class="btn btn-success">Admin Home</a><br />
-                        <a href="index.php" class="btn btn-primary">Reports Home</a><br />
+                    <div class="col-md-4 text-right side-nav">
+                        <?php echo date( 'm/d/Y h:i a' ) ?><br />
                     </div>
                 </div>
                 <div class="row">
@@ -185,14 +214,17 @@ $grandTotal = 0;
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ( $costCodes as $costCode => $values ) { ?>
+                                <?php
+                                foreach ( $costCodes as $costCode => $values ) {
+                                    $code = isset( $codes[ $costCode ] ) ? $codes[ $costCode ][ 'code' ] : '';
+                                    ?>
                                     <tr>
-                                        <td><?php echo $costCode; ?></td>
+                                        <td><?php echo $code; ?></td>
                                         <td><?php echo $values[ 'count' ]; ?></td>
-                                        <td><?php echo '$' . number_format( $values[ 'totalList' ], 2 ); ?></td>
-                                        <td><?php echo '$' . number_format( $values[ 'totalSell' ], 2 ); ?></td>
-                                        <td><?php echo '$' . number_format( $values[ 'totalCost' ], 2 ); ?></td>
-                                        <td><?php echo '$' . number_format( $values[ 'totalValue' ], 2 ); ?></td>
+                                        <td><?php echo '$' . number_format( $values[ 'total_list_price' ], 2 ); ?></td>
+                                        <td><?php echo '$' . number_format( $values[ 'total_sell_price' ], 2 ); ?></td>
+                                        <td><?php echo '$' . number_format( $values[ 'total_cost' ], 2 ); ?></td>
+                                        <td><?php echo '$' . number_format( $values[ 'total_value' ], 2 ); ?></td>
                                     </tr>
                                 <?php } ?>
                                 <tr>

@@ -63,7 +63,7 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                                 <?php if ( in_array( date( 'Y' ), $years ) ) { ?>
                                     <tr>
                                         <td class="text-center">
-                                            <a href="inventory-page-list.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
+                                            <a href="inventory-page.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
                                         </td>
                                         <td class="text-center">
                                             <a href="keyers-list.php"><?php echo date( 'Y' ) ?> (Current Year)</a>
@@ -85,7 +85,7 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                                             continue;
                                         }
 
-                                        echo '<td class="text-center"><a href="inventory-page-list.php?year=' . $year . '">' . $year . '</a></td>';
+                                        echo '<td class="text-center"><a href="inventory-page.php?year=' . $year . '">' . $year . '</a></td>';
                                         echo '<td class="text-center"><a href="keyers-list.php?year=' . $year . '">' . $year . '</a></td>';
                                         echo '<td class="text-center"><a href="manufacturers-list.php?year=' . $year . '">' . $year . '</a></td>';
                                         echo '<td class="text-center"><a href="cost-code-list.php?year=' . $year . '">' . $year . '</a></td>';

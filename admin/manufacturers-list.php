@@ -44,6 +44,7 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
 
 $manufacturers = $db->table( 'manufacturer' )
     ->where( [ 'year' => $year ] )
+    ->orderBy( 'name asc' )
     ->select();
 
 $results = $db->table( 'inventory' )
@@ -96,9 +97,6 @@ foreach ( $results as $result ) {
                     <div class="labels">
                         <div class="row">
                             <div class="col-md-1">
-                                <label for="id">ID</label>
-                            </div>
-                            <div class="col-md-1">
                                 <div class="form-group">
                                     <label for="code">Code</label>
                                 </div>
@@ -117,7 +115,9 @@ foreach ( $results as $result ) {
                             <?php foreach ( $manufacturers as $row ) {
                                 include( 'manufacturer-row.php' );
                             } ?>
-                        <?php } ?>
+                        <?php } else {
+                            include( 'manufacturer-row.php' );
+                        } ?>
                     </div>
 
                     <div class="row">

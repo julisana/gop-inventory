@@ -40,15 +40,6 @@ $years = get_existing_years( $db );
                         <?php } else { ?>
                             Add Inventory Page (Current Year Not Started Yet)
                         <?php } ?>
-                        <?php if ( !empty( $years ) ) { ?>
-                            <ul>
-                                <?php foreach ( $years as $year ) {
-                                    if ( $year != date( 'Y' ) ) {
-                                        echo '<li><a href="add.php?year=' . $year . '">Previous Year: ' . $year . '</a></li>';
-                                    }
-                                } ?>
-                            </ul>
-                        <?php } ?>
                     </div>
                 </div>
             </div>

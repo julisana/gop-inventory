@@ -68,24 +68,35 @@ $pages = $db->table( 'inventory' )
                     <div class="col-md-4 text-center">
                         <h2>Page Number Report (<?php echo $year; ?>)</h2>
                     </div>
-                    <div class="col-md-4 text-right side-nav d-print-none">
-                        <a href="index.php" class="btn btn-success">Admin Home</a><br />
-                        <a href="index.php" class="btn btn-primary">Reports Home</a><br />
+                    <div class="col-md-4 text-right side-nav">
+                        <?php echo date( 'm/d/Y h:i a' ) ?><br />
+                        <div class="d-print-none">
+                            <a href="index.php" class="btn btn-success">Admin Home</a>&nbsp;&nbsp;
+                            <a href="index.php" class="btn btn-primary">Reports Home</a><br />
+
+                            <form action="count-sheet-verification.php" method="get" class="form-inline d-flex justify-content-end">
+                                <input type="hidden" name="year" value="<?php echo $year; ?>" />
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">Select Page:</label>
+                                    </div>
+                                    <select name="page" class="form-control custom-select">
+                                        <?php foreach ( $pages as $row ) { ?>
+                                            <option value="<?php echo $row[ 'page' ] ?>"<?php echo $row[ 'page' ] == $page ? ' selected' : '' ?>><?php echo $row[ 'page' ] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <div class="input-group-append">
+                                        <input type="submit" class="form-control btn btn-primary" value="Submit" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
                 <div class="row mb-4">
-                    <div class="offset-md-4 col-md-4">
-                        <form action="count-sheet-verification.php" method="get" class="form-inline">
-                            <input type="hidden" name="year" value="<?php echo $year; ?>" />
-                            <label>Select Page:</label>&nbsp;&nbsp;
-                            <select name="page" class="form-control">
-                                <?php foreach ( $pages as $row ) { ?>
-                                    <option value="<?php echo $row[ 'page' ] ?>"<?php echo $row[ 'page' ] == $page ? ' selected' : '' ?>><?php echo $row[ 'page' ] ?></option>
-                                <?php } ?>
-                            </select>&nbsp;&nbsp;
-                            <input type="submit" class="form-control btn btn-primary" value="Submit" />
-                        </form>
+                    <div class="offset-md-4 col-md-4 text-center">
+                        <h2><?php echo 'Page ' . $page; ?></h2>
                     </div>
                 </div>
 

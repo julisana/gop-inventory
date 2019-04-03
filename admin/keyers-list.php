@@ -44,6 +44,7 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
 
 $keyers = $db->table( 'keyer' )
     ->where( [ 'year' => $year ] )
+    ->orderBy( 'name asc' )
     ->select();
 
 $results = $db->table( 'inventory' )
@@ -97,9 +98,6 @@ foreach ( $results as $result ) {
                     <div class="labels">
                         <div class="row">
                             <div class="col-md-1">
-                                <label for="id">ID</label>
-                            </div>
-                            <div class="col-md-1">
                                 <div class="form-group">
                                     <label for="code">Code</label>
                                 </div>
@@ -118,7 +116,9 @@ foreach ( $results as $result ) {
                             <?php foreach ( $keyers as $index => $row ) {
                                 include( 'keyer-row.php' );
                             } ?>
-                        <?php } ?>
+                        <?php } else {
+                            include( 'keyer-row.php' );
+                        } ?>
                     </div>
 
                     <div class="row">
