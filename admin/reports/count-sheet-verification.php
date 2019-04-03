@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * This report displays all line items on a specific page.
+ * No calculations are made in this report, just data display
+ */
+
 require_once( './../../config.php' );
 
 use GOP\Inventory\DB;

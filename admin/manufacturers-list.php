@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Add/Update/Delete manufacturers for the specified year. Manufacturers that have been used on an inventory
+ * item cannot be deleted.
+ */
+
 require_once( './../config.php' );
 
 use GOP\Inventory\DB;
@@ -7,13 +12,22 @@ use GOP\Inventory\Models\Manufacturer;
 
 $db = new DB();
 
+$year = date( 'Y' );
+if ( isset( $_REQUEST[ 'year' ] ) ) {
+    $year = $_REQUEST[ 'year' ];
+}
+
+//If the form has been submitted, process the data and save/delete the appropriate records
 if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
-    $manufacturer = new Manufacturer();
+    //Fields that are shared across all saved records
     $year = $_REQUEST[ 'year' ];
     $shared = [
         'year' => $year,
     ];
 
+    $manufacturer = new Manufacturer();
+
+    //Go through each manufacturer and save it. If there's an exception, return to the page and display an error
     foreach ( $_REQUEST[ 'manufacturers' ] as $manufacturerItem ) {
         $manufacturerItem = array_merge( $manufacturerItem, $shared );
 
@@ -24,6 +38,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         }
     }
 
+    //Go through each deleted manufacturer and delete it. If there's an exception, return to the page and display an error
     if ( !empty( $_REQUEST[ 'deleteIds' ] ) ) {
         try {
             foreach ( explode( ',', $_REQUEST[ 'deleteIds' ] ) as $deleteId ) {
@@ -34,17 +49,13 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         }
     }
 
+    //Once all records have been saved, return the user to the current page
     redirect( 'manufacturers-list.php?year=' . $year );
 }
 
 $error = '';
 if ( isset( $_REQUEST[ 'error' ] ) ) {
     $error = $_REQUEST[ 'error' ];
-}
-
-$year = date( 'Y' );
-if ( isset( $_REQUEST[ 'year' ] ) ) {
-    $year = $_REQUEST[ 'year' ];
 }
 
 $manufacturers = $db->table( 'manufacturer' )

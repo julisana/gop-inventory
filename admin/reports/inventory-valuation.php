@@ -1,22 +1,19 @@
 <?php
-//page number
-//manufacturer
-//product number
-//product description
-//quantity
-//list price
-//list price * quantity
-//sell price
-//sell price * quantity
-//cost
-//cost * quantity
-//value
-//-----
-//Grand Total
-//SUM: list price * quantity
-//SUM: sell price * quantity
-//SUM: cost * quantity
-//SUM: value
+/**
+ * This report displays all line items for the specified year, grouped by Cost Code. At the end there is
+ * a summary table of each cost code with a total value for the entire year.
+ *
+ * Each cost code should start a new printed page, though since this is controlled via CSS, it is not a guarantee.
+ *
+ * Multiple calculations are made in this report:
+ *    - Extended List Price (List Price * Quantity)
+ *    - Extended Sell Price (Sell Price * Quantity)
+ *    - Extended Cost (Cost * Quanitty)
+ *    - Value (based on cost code. Percentage * Specified Field * Quantity)
+ *       - Example: Cost code: 20% off List Price. Quantity = 2. Value = List Price * Quantity * 20%
+ *    - Total List Price, Sell Price, Cost, and Value for each cost code
+ *    - Total Value for all cost codes
+ */
 
 require_once( './../../config.php' );
 

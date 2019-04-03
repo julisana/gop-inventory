@@ -49,6 +49,7 @@ if ( !function_exists( 'get_keyers' ) ) {
         $results = $db->table( 'keyer' )
             ->fields( [ 'id', 'name' ] )
             ->where( [ 'year' => $year ] )
+            ->orderBy( 'name asc' )
             ->select();
 
         foreach ( $results as $result ) {
@@ -78,6 +79,7 @@ if ( !function_exists( 'get_manufacturers' ) ) {
         $results = $db->table( 'manufacturer' )
             ->fields( [ 'id', 'name' ] )
             ->where( [ 'year' => $year ] )
+            ->orderBy( 'name asc' )
             ->select();
 
         foreach ( $results as $result ) {
@@ -107,6 +109,7 @@ if ( !function_exists( 'get_cost_codes' ) ) {
         $results = $db->table( 'cost_code' )
             ->fields( [ 'id', 'name' ] )
             ->where( [ 'year' => $year ] )
+            ->orderBy( 'name asc' )
             ->select();
 
         foreach ( $results as $result ) {

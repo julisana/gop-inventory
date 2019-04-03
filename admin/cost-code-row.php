@@ -1,23 +1,22 @@
 <?php
-if ( !isset( $row ) ) {
-    $row = [
-        'code' => '',
-        'name' => '',
-        'percentage' => '',
-        'is_decrease' => '',
-        'field' => '',
-    ];
-}
+    if ( !isset( $row ) ) {
+        $row = [
+            'code' => '',
+            'name' => '',
+            'percentage' => '',
+            'is_decrease' => '',
+            'field' => '',
+        ];
+    }
 
-if ( !isset( $index ) ) {
-    $index = 0;
-}
+    if ( !isset( $index ) ) {
+        $index = 0;
+    }
 
-$used = false;
-if ( isset( $row[ 'id' ] ) && isset( $usedItems ) && in_array( $row[ 'id' ], $usedItems ) ) {
-    $used = true;
-}
-
+    $used = false;
+    if ( isset( $row[ 'id' ] ) && isset( $usedItems ) && in_array( $row[ 'id' ], $usedItems ) ) {
+        $used = true;
+    }
 ?>
 
 <div class="row cost-code-item">
@@ -60,7 +59,7 @@ if ( isset( $row[ 'id' ] ) && isset( $usedItems ) && in_array( $row[ 'id' ], $us
         </div>
     </div>
     <div class="col-md-1">
-        <span class="btn <?php echo $used ? 'btn-secondary' : 'btn-danger' ?> remove-item <?php echo ( $index == 0 && count( $keyers ) == 1 ) ? 'd-none' : '' ?>"
+        <span class="btn <?php echo $used ? 'btn-secondary' : 'btn-danger' ?> remove-item <?php echo ( $index == 0 && count( $costCodes ) == 1 ) ? 'd-none' : '' ?>"
               data-row="<?php echo $index; ?>" <?php if ( $used ) { ?>data-toggle="popover"<?php } ?>>X</span>
     </div>
 </div>

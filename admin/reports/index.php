@@ -89,42 +89,5 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                 </div>
             </div>
         </div>
-
-        <div class="modal" tabindex="-1" role="dialog" id="update-valuation" aria-labelledby="update-valuation" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Update Valuation Field (<span class="year"></span>)</h5>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            You are about to run an update that will modify data for the specified year.
-                        </p>
-
-                        <p>
-                            Are you sure you want to update the valuation field for <span class="year"></span>?
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <form action="update-valuation.php" method="get">
-                            <input type="hidden" name="year" value="" />
-                            <input type="submit" class="btn btn-danger" value="Update" />
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script type="text/javascript">
-            $('#update-valuation').on('show.bs.modal', function (event) {
-                var year = $(event.relatedTarget).data('year') //get the specified year
-
-                $(this).find('.year').text(year)
-                $(this).find('.modal-footer input[name=year]').val(year);
-                $(this).find('.modal-footer input').val(year)
-                $(this).find('.modal-footer input[type=submit]').val('Update ' + year)
-            })
-        </script>
     </body>
 </html>

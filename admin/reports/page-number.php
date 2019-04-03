@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * This report displays all page numbers in the specified year.
+ * No calculations are made in this report, just data display.
+ */
+
 require_once( './../../config.php' );
 
 use GOP\Inventory\DB;
@@ -21,7 +26,7 @@ $offset = 0;
 
 //Split the results in to 3 chunks so they can display in 3 columns
 $chunk1 = array_slice( $pages, $offset, count( $pages ) / 3 );
-$offset .= count( $chunk1 );
+$offset += count( $chunk1 );
 $chunk2 = array_slice( $pages, $offset, count( $pages ) / 3 );
 $offset += count( $chunk2 );
 $chunk3 = array_slice( $pages, $offset, count( $pages ) / 3 );

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Add/Update/Delete inventory items for the specified year and page. No calculations are done on this page,
+ * but the Cost and Cost Code fields are accessible. Cost code has a default value.
+ */
+
 require_once( './../config.php' );
 
 use GOP\Inventory\DB;
@@ -85,10 +90,6 @@ $items = get_inventory_items( $year, $page, '', $db );
 $manufacturers = get_manufacturers( $year, $db );
 $costCodes = get_cost_codes( $year, $db );
 
-//All items on a page should have the same location, so just pull the first one to use it
-$keys = array_keys( $items );
-$first = $items[ $keys[ 0 ] ];
-
 ?>
 
 <!DOCTYPE html>
@@ -118,31 +119,34 @@ $first = $items[ $keys[ 0 ] ];
                     </div>
                     <div class="col-md-4 text-right side-nav">
                         <a href="index.php" class="btn btn-success">Admin Home</a><br />
-                        <form action="inventory-page.php" method="post" class="form-inline d-flex justify-content-end">
-                            <input type="hidden" name="year" value="<?php echo $year; ?>" />
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">Select Page:</label>
-                                </div>
-                                <select name="page" class="custom-select form-control">
-                                    <option value="">Select One</option>
-                                    <?php foreach ( $pages as $pageNumber => $keyerId ) {
-                                        $name = 'Name Unknown';
-                                        if ( isset( $keyers[ $keyerId ] ) ) {
-                                            $name = $keyers[ $keyerId ];
-                                        }
-                                        ?>
-
-                                        <option value="<?php echo $pageNumber; ?>"<?php echo $pageNumber == $page ? ' selected' : '' ?>><?php echo $pageNumber . ', ' . $name ?></option>
-                                    <?php } ?>
-                                </select>
+                        <?php if ( !empty( $pages ) ) { ?>
+                            <form action="inventory-page.php" method="post"
+                                  class="form-inline d-flex justify-content-end">
                                 <input type="hidden" name="year" value="<?php echo $year; ?>" />
-                                <input type="hidden" name="selectPage" value />
-                                <div class="input-group-append">
-                                    <input type="submit" class="form-control btn btn-primary" value="Submit" />
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">Select Page:</label>
+                                    </div>
+                                    <select name="page" class="custom-select form-control">
+                                        <option value="">Select One</option>
+                                        <?php foreach ( $pages as $pageNumber => $keyerId ) {
+                                            $name = 'Name Unknown';
+                                            if ( isset( $keyers[ $keyerId ] ) ) {
+                                                $name = $keyers[ $keyerId ];
+                                            }
+                                            ?>
+
+                                            <option value="<?php echo $pageNumber; ?>"<?php echo $pageNumber == $page ? ' selected' : '' ?>><?php echo $pageNumber . ', ' . $name ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <input type="hidden" name="year" value="<?php echo $year; ?>" />
+                                    <input type="hidden" name="selectPage" value />
+                                    <div class="input-group-append">
+                                        <input type="submit" class="form-control btn btn-primary" value="Submit" />
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        <?php } ?>
                     </div>
                 </div>
 
@@ -150,22 +154,26 @@ $first = $items[ $keys[ 0 ] ];
 
                 <?php include( '../errors.php' ); ?>
 
-                <?php if ( $page ) { ?>
+                <?php if ( $page ) {
+                    //All items on a page should have the same location and keyer, so just pull the first one to use it
+                    $keys = array_keys( $items );
+                    $first = $items[ $keys[ 0 ] ];
+                    ?>
                     <form action="inventory-page.php" method="post">
                         <div class="row page">
                             <div class="offset-md-3 col-md-2">
                                 <div class="form-group">
-                                    <label for="location">Location</label>
-                                    <input type="text" class="form-control" id="location" name="location"
-                                           value="<?php echo $first[ 'location' ]; ?>" required />
-                                    <input type="hidden" name="year" value="<?php echo $year; ?>" />
+                                    <label for="page">Page Number</label>
+                                    <input type="number" class="form-control" id="page" name="page"
+                                           value="<?php echo $page; ?>" disabled />
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="page">Page Number</label>
-                                    <input type="number" class="form-control" id="page" name="page"
-                                           value="<?php echo $page; ?>" required />
+                                    <label for="location">Location</label>
+                                    <input type="text" class="form-control" id="location" name="location"
+                                           value="<?php echo $first[ 'location' ]; ?>" />
+                                    <input type="hidden" name="year" value="<?php echo $year; ?>" />
                                 </div>
                             </div>
                             <div class="col-md-2">

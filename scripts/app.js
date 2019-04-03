@@ -34,6 +34,11 @@ function addRow(rowClass) {
     $(item).find('input, select, span').each(function (key, element) {
         $(element).val('');
 
+        //If the element supplies a default value, set it on the new line
+        if (typeof $(element).attr('data-default') !== 'undefined') {
+            $(element).val($(element).attr('data-default'));
+        }
+
         if ($(element).hasClass('id')) {
             $(element).remove();
         }
