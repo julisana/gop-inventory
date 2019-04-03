@@ -27,7 +27,7 @@
             <div class="col-md-1 pl-1 pr-1">
                 <div class="form-group">
                     <input type="number" class="form-control form-control-sm line pl-1 pr-1" name="inventory[<?php echo $index; ?>][line_number]"
-                           value="<?php echo $row[ 'line_number' ]; ?>" />
+                           value="<?php echo $row[ 'line_number' ]; ?>" required />
                     <?php if ( isset( $row[ 'id' ] ) ) { ?>
                         <input type="hidden" class="id" name="inventory[<?php echo $index; ?>][id]" value="<?php echo $row[ 'id' ]; ?>" />
                     <?php } ?>
@@ -35,10 +35,9 @@
             </div>
             <div class="col-md-1 pl-1 pr-1">
                 <div class="form-group">
-                    <select class="form-control form-control-sm is-new pl-1 pr-1" name="inventory[<?php echo $index; ?>][is_new]">
-                        <option <?php echo $row[ 'is_new' ] == '' ? 'selected' : ''; ?> value="">Select One</option>
+                    <select class="form-control form-control-sm is-new pl-1 pr-1" name="inventory[<?php echo $index; ?>][is_new]" required>
                         <option <?php echo $row[ 'is_new' ] == '1' ? 'selected' : ''; ?> value="1">New</option>
-                        <option <?php echo $row[ 'is_new' ] == '0' ? 'selected' : ''; ?> value="0">Used</option>
+                        <option <?php echo $row[ 'is_new' ] == '0' || $row[ 'is_new' ] == '' ? 'selected' : ''; ?> value="0">Used</option>
                     </select>
                 </div>
             </div>
@@ -62,7 +61,7 @@
             <div class="col-md-2 pl-1 pr-1">
                 <div class="form-group">
                     <input type="text" class="form-control form-control-sm product-description pl-1 pr-1"
-                           name="inventory[<?php echo $index; ?>][product_description]" value="<?php echo $row[ 'product_description' ]; ?>" />
+                           name="inventory[<?php echo $index; ?>][product_description]" value="<?php echo $row[ 'product_description' ]; ?>" required />
                 </div>
             </div>
             <div class="col-md-1 pl-1 pr-1">
@@ -90,7 +89,7 @@
                             <span class="input-group-text pl-1 pr-1">$</span>
                         </div>
                         <input type="number" class="form-control form-control-sm sell-price pl-1 pr-1"
-                               name="inventory[<?php echo $index; ?>][sell_price]" min="0.01" step="0.01" placeholder="0.00"
+                               name="inventory[<?php echo $index; ?>][sell_price]" min="0.00" step="0.01" placeholder="0.00"
                                value="<?php echo $row[ 'sell_price' ]; ?>" />
                     </div>
                 </div>
@@ -102,7 +101,11 @@
                         <select name="inventory[<?php echo $index; ?>][cost_code]" class="form-control form-control-sm cost-code pl-1 pr-1">
                             <option value="">Select One</option>
                             <?php foreach ( $costCodes as $key => $value ) {
-                                echo '<option value="' . $key . '"' . ( $row[ 'cost_code' ] == $key ? ' selected' : '' ) . '>' . $value . '</option>' . "\n";
+                                $selected = false;
+                                if ( $row[ 'cost_code' ] == $key || ( empty( $row[ 'cost_code' ] ) && $value == '20% off Sell' ) ) {
+                                    $selected = true;
+                                }
+                                echo '<option value="' . $key . '"' . ( $selected ? ' selected' : '' ) . '>' . $value . '</option>' . "\n";
                             } ?>
                         </select>
                     </div>

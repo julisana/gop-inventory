@@ -7,6 +7,11 @@ use GOP\Inventory\Models\InventoryItem;
 
 $db = new DB();
 
+$year = date( 'Y' );
+if ( isset( $_REQUEST[ 'year' ] ) ) {
+    $year = $_REQUEST[ 'year' ];
+}
+
 if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     $inventory = new InventoryItem();
     $shared = [
@@ -15,6 +20,12 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         'page' => $_REQUEST[ 'page' ],
         'keyer' => $_REQUEST[ 'keyer' ],
     ];
+
+    $pages = get_pages( $year, $db );
+    if ( isset( $pages[ $shared[ 'page' ] ] ) ) {
+        redirect( 'add.php?year=' . $year . '&error=ERRORPAGEEXISTS' );
+        die;
+    }
 
     foreach ( $_REQUEST[ 'inventory' ] as $inventoryItem ) {
         $inventoryItem = array_merge( $inventoryItem, $shared );
@@ -29,12 +40,13 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     redirect( 'add.php' );
 }
 
-$year = date( 'Y' );
-if ( isset( $_REQUEST[ 'year' ] ) ) {
-    $year = $_REQUEST[ 'year' ];
+$error = '';
+if ( isset( $_REQUEST[ 'error' ] ) ) {
+    $error = $_REQUEST[ 'error' ];
 }
 
 $manufacturers = get_manufacturers( $year, $db );
+$keyers = get_keyers( $year, $db );
 
 ?>
 
@@ -67,6 +79,11 @@ $manufacturers = get_manufacturers( $year, $db );
                         <a href="index.php" class="btn btn-success">Home</a>
                     </div>
                 </div>
+
+                <div class="row">&nbsp;</div>
+
+                <?php include( 'errors.php' ); ?>
+
                 <form action="add.php" method="post">
                     <div class="row page">
                         <div class="col-md-2 offset-md-3">

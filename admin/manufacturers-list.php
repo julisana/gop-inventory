@@ -37,6 +37,11 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     redirect( 'manufacturers-list.php?year=' . $year );
 }
 
+$error = '';
+if ( isset( $_REQUEST[ 'error' ] ) ) {
+    $error = $_REQUEST[ 'error' ];
+}
+
 $year = date( 'Y' );
 if ( isset( $_REQUEST[ 'year' ] ) ) {
     $year = $_REQUEST[ 'year' ];
@@ -91,6 +96,7 @@ foreach ( $results as $result ) {
                 <div class="row">&nbsp;</div>
 
                 <?php include( '../errors.php' ); ?>
+
                 <form action="manufacturers-list.php" method="post">
                     <input type="hidden" name="year" value="<?php echo $year ?>" />
 

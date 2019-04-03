@@ -160,11 +160,16 @@ if ( !function_exists( 'get_pages' ) ) {
             $db = new DB();
         }
 
-        $pages = $db->table( 'inventory' )
+        $pages = [];
+        $results = $db->table( 'inventory' )
             ->fields( [ 'distinct page', 'keyer' ] )
             ->where( [ 'year' => $year ] )
             ->orderBy( 'page asc' )
             ->select();
+
+        foreach ( $results as $page ) {
+            $pages[ $page[ 'page' ] ] = $page[ 'keyer' ];
+        }
 
         return $pages;
     }

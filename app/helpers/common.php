@@ -37,6 +37,12 @@ if ( !function_exists( 'get_error' ) ) {
             case 'ERRORNOID':
                 $error = 'One or more records could not be updated.';
             break;
+            case 'ERRORPAGEEXISTS':
+                $error = 'The page already exists.';
+            break;
+            case 'ERRORPAGENOTFOUND':
+                $error = 'The selected page cannot be found.';
+            break;
             default:
                 $error = 'An error has occurred.';
 

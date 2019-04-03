@@ -7,17 +7,29 @@ use GOP\Inventory\Models\InventoryItem;
 
 $db = new DB();
 
-if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
-    if ( isset( $_REQUEST[ 'pageKeyer' ] ) ) {
-        $data = json_decode( urldecode( $_REQUEST[ 'pageKeyer' ] ), true );
+$year = date( 'Y' );
+if ( isset( $_REQUEST[ 'year' ] ) ) {
+    $year = $_REQUEST[ 'year' ];
+}
 
-        redirect( 'inventory-page.php?year=' . $data[ 'year' ] . '&page=' . $data[ 'page' ] . '&keyer=' . $data[ 'keyer' ] );
+$page = false;
+if ( isset( $_REQUEST[ 'page' ] ) ) {
+    $page = $_REQUEST[ 'page' ];
+}
+
+$keyer = false;
+if ( isset( $_REQUEST[ 'keyer' ] ) ) {
+    $keyer = $_REQUEST[ 'keyer' ];
+}
+
+if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
+    if ( isset( $_REQUEST[ 'selectPage' ] ) && $page ) {
+        redirect( 'inventory-page.php?year=' . $year . '&page=' . $page );
         die;
     }
-
-    $year = $_REQUEST[ 'year' ];
-    $page = $_REQUEST[ 'page' ];
-    $keyer = $_REQUEST[ 'keyer' ];
+    else if ( isset( $_REQUEST[ 'selectPage' ] ) && !$page ) {
+        redirect( 'inventory-page.php?year=' . $year . '&error=ERRORPAGENOTFOUND' );
+    }
 
     $inventory = new InventoryItem();
     $shared = [
@@ -40,7 +52,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         try {
             $inventory->setDB( $db )->saveOrCreate( $inventoryItem );
         } catch ( Exception $e ) {
-            redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer . '&error=ERRORUPDATE' );
+            redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&error=ERRORUPDATE' );
         }
     }
 
@@ -50,33 +62,18 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
                 $inventory->setDb( $db )->delete( $deleteId, $year );
             }
         } catch ( Exception $e ) {
-            redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer . '&error=ERRORUPDATE' );
+            redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&error=ERRORUPDATE' );
         }
     }
 
     if ( $error ) {
-        redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer . '&error=' . $error );
+        redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&error=' . $error );
     }
 
-    redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&keyer=' . $keyer );
+    redirect( 'inventory-page.php?year=' . $year . '&page=' . $page );
 }
 
-$year = date( 'Y' );
-if ( isset( $_REQUEST[ 'year' ] ) ) {
-    $year = $_REQUEST[ 'year' ];
-}
-
-$page = false;
-if ( isset( $_REQUEST[ 'page' ] ) ) {
-    $page = $_REQUEST[ 'page' ];
-}
-
-$keyer = false;
-if ( isset( $_REQUEST[ 'keyer' ] ) ) {
-    $keyer = $_REQUEST[ 'keyer' ];
-}
-
-$errors = '';
+$error = '';
 if ( isset( $_REQUEST[ 'error' ] ) ) {
     $error = $_REQUEST[ 'error' ];
 }
@@ -84,7 +81,7 @@ if ( isset( $_REQUEST[ 'error' ] ) ) {
 $pages = get_pages( $year, $db );
 $keyers = get_keyers( $year, $db );
 
-$items = get_inventory_items( $year, $page, $keyer, $db );
+$items = get_inventory_items( $year, $page, '', $db );
 $manufacturers = get_manufacturers( $year, $db );
 $costCodes = get_cost_codes( $year, $db );
 
@@ -127,18 +124,20 @@ $first = $items[ $keys[ 0 ] ];
                                 <div class="input-group-prepend">
                                     <label class="input-group-text">Select Page:</label>
                                 </div>
-                                <select name="pageKeyer" class="custom-select form-control">
+                                <select name="page" class="custom-select form-control">
                                     <option value="">Select One</option>
-                                    <?php foreach ( $pages as $row ) {
+                                    <?php foreach ( $pages as $pageNumber => $keyerId ) {
                                         $name = 'Name Unknown';
-                                        if ( isset( $keyers[ $row[ 'keyer' ] ] ) ) {
-                                            $name = $keyers[ $row[ 'keyer' ] ];
+                                        if ( isset( $keyers[ $keyerId ] ) ) {
+                                            $name = $keyers[ $keyerId ];
                                         }
                                         ?>
 
-                                        <option value="<?php echo urlencode( json_encode( [ 'page' => $row[ 'page' ], 'keyer' => $row[ 'keyer' ], 'year' => $year ] ) ); ?>"<?php echo $row[ 'page' ] == $page && $row[ 'keyer' ] == $keyer ? ' selected' : '' ?>><?php echo $row[ 'page' ] . ', ' . $name ?></option>
+                                        <option value="<?php echo $pageNumber; ?>"<?php echo $pageNumber == $page ? ' selected' : '' ?>><?php echo $pageNumber . ', ' . $name ?></option>
                                     <?php } ?>
                                 </select>
+                                <input type="hidden" name="year" value="<?php echo $year; ?>" />
+                                <input type="hidden" name="selectPage" value />
                                 <div class="input-group-append">
                                     <input type="submit" class="form-control btn btn-primary" value="Submit" />
                                 </div>
@@ -151,7 +150,7 @@ $first = $items[ $keys[ 0 ] ];
 
                 <?php include( '../errors.php' ); ?>
 
-                <?php if ( $page && $keyer ) { ?>
+                <?php if ( $page ) { ?>
                     <form action="inventory-page.php" method="post">
                         <div class="row page">
                             <div class="offset-md-3 col-md-2">
@@ -176,7 +175,7 @@ $first = $items[ $keys[ 0 ] ];
                                         <option value="">Select One</option>
                                         <?php foreach ( $keyers as $key => $value ) { ?>
                                             <!--echo '<option value="' . $key . '"' . ( $keyer == $key ? ' selected' : '' ) . '>' . $value . '</option>' . "\n";-->
-                                            <option value="<?php echo $key; ?>" <?php echo ( $keyer == $key ) ? 'selected' : ''; ?>><?php echo $value; ?></option>
+                                            <option value="<?php echo $key; ?>" <?php echo ( $first[ 'keyer' ] == $key ) ? 'selected' : ''; ?>><?php echo $value; ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>

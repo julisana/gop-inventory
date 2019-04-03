@@ -40,9 +40,9 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                     </div>
                     <div class="col-md-4 text-right side-nav">
                         <?php if ( !in_array( date( 'Y' ), $years ) ) { ?>
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#new-year">Start New Year (<?php echo date( 'Y' ) ?>)</a>
+                            <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#new-year">Start New Year (<?php echo date( 'Y' ) ?>)</a>
                         <?php } else { ?>
-                            <span class="btn btn-success disabled">Start New Year (<?php echo date( 'Y' ) ?> Already Started)</span>
+                            <span class="btn btn-danger disabled">Start New Year (<?php echo date( 'Y' ) ?> Already Started)</span>
                         <?php } ?><br />
                         <a href="reports/index.php" class="btn btn-primary">All Reports</a>
                     </div>
