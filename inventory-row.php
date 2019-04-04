@@ -123,7 +123,7 @@ if ( isset( $costCodes ) ) {
                         $selected = false;
                         if (
                             $row[ 'cost_code' ] == $key ||
-                            ( empty( $row[ 'cost_code' ] ) && $value == $defaultCostCode )
+                            ( empty( $row[ 'cost_code' ] ) && $key == $defaultCostCode )
                         ) {
                             $selected = true;
                         }
