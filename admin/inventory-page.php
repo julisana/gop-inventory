@@ -40,7 +40,6 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     $shared = [
         'location' => $_REQUEST[ 'location' ],
         'year' => $year,
-        'page' => $page,
         'keyer' => $keyer,
     ];
 
@@ -208,6 +207,7 @@ $costCodes = get_cost_codes( $year, $db );
 
                         <div class="row">
                             <div class="col-md-2">
+                                <input type="hidden" name="page" value="<?php echo $page; ?>" />
                                 <input type="hidden" name="deleteIds" id="delete" value="" />
                                 <input type="submit" class="form-control btn btn-primary" value="Save Changes" />
                             </div>
