@@ -204,6 +204,8 @@ $costCodes = get_cost_codes( $year, $db );
                             <?php } ?>
                         </div>
 
+                        <div class="row">&nbsp;</div>
+
                         <div class="row">
                             <div class="col-md-2">
                                 <input type="hidden" name="deleteIds" id="delete" value="" />
