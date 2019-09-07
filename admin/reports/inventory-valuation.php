@@ -169,7 +169,7 @@ $grandTotal = 0;
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <td colspan="7" class="text-right">Total for cost code '<?php echo $code; ?>'
+                                        <td colspan="7" class="text-right">Total for cost code '<?php echo !empty( $code ) ? $code : 'NO CODE SET'; ?>'
                                         </td>
                                         <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'total_list_price' ], 2 ); ?></td>
                                         <td></td>

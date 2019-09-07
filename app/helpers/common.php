@@ -15,6 +15,8 @@ if ( !function_exists( 'redirect' ) ) {
     function redirect( $location )
     {
         header( 'Location: ' . $location );
+
+        exit;
     }
 }
 

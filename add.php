@@ -34,7 +34,12 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     foreach ( $_REQUEST[ 'inventory' ] as $inventoryItem ) {
         $inventoryItem = array_merge( $inventoryItem, $shared );
 
-        $inventory->setDB( $db )->create( $inventoryItem );
+        try {
+            $inventory->setDB( $db )->create( $inventoryItem );
+        }
+        catch ( Exception $exception ) {
+            redirect( 'add.php?year=' . $year . '&error=ERRORSAVE' );
+        }
     }
 
     if ( isset( $_REQUEST[ 'save_close' ] ) ) {
@@ -125,6 +130,8 @@ $keyers = get_keyers( $year, $db );
                     <div class="inventory-items">
                         <?php include( 'inventory-row.php' ); ?>
                     </div>
+
+                    <br />
 
                     <div class="row">
                         <div class="col-md-2">

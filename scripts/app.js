@@ -27,7 +27,7 @@ function addRow(rowClass) {
     var rowId = parseInt($(html).find('.remove-item').first().attr('data-row'), 10) + 1;
 
     var item = document.createElement('div');
-    item.setAttribute('class', 'row pt-3 ' + rowClass);
+    item.setAttribute('class', 'row ' + (rowClass === 'inventory-item' ? 'pt-3 ' : '') + rowClass);
     item.innerHTML = html;
 
     //If there are any values in any input or textarea, reset them.
