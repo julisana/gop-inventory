@@ -117,6 +117,7 @@ $grandTotal = 0;
                                     <tr>
                                         <th>CD</th>
                                         <th>Page</th>
+                                        <th>Location</th>
                                         <th>Mfg.</th>
                                         <th>Item #</th>
                                         <th>Description</th>
@@ -155,6 +156,7 @@ $grandTotal = 0;
                                         <tr>
                                             <td><?php echo $code; ?></td>
                                             <td><?php echo $row[ 'page' ]; ?></td>
+                                            <td><?php echo $row[ 'location' ]; ?></td>
                                             <td><?php echo $manufacturers[ $row[ 'manufacturer' ] ] ?></td>
                                             <td><?php echo $row[ 'product_id' ]; ?></td>
                                             <td><?php echo $row[ 'product_description' ]; ?></td>
@@ -169,7 +171,7 @@ $grandTotal = 0;
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <td colspan="7" class="text-right">Total for cost code '<?php echo !empty( $code ) ? $code : 'NO CODE SET'; ?>'
+                                        <td colspan="8" class="text-right">Total for cost code '<?php echo !empty( $code ) ? $code : 'NO CODE SET'; ?>'
                                         </td>
                                         <td><?php echo '$' . number_format( $costCodes[ $costCode ][ 'total_list_price' ], 2 ); ?></td>
                                         <td></td>
@@ -183,7 +185,7 @@ $grandTotal = 0;
                         </div>
                     </div>
                     <div class="page-break d-print-none row">&nbsp;</div>
-                    <?php $grandTotal .= $costCodes[ $costCode ][ 'total_value' ]; ?>
+                    <?php $grandTotal += $costCodes[ $costCode ][ 'total_sell_price' ]; ?>
                 <?php } ?>
 
                 <div class="row header mb-4 d-none">
@@ -225,8 +227,9 @@ $grandTotal = 0;
                                     </tr>
                                 <?php } ?>
                                 <tr>
-                                    <td colspan="5" class="text-right"><strong>Grand Total</strong></td>
+                                    <td colspan="3" class="text-right"><strong>Grand Total</strong></td>
                                     <td><?php echo '$' . number_format( $grandTotal, 2 ); ?></td>
+                                    <td colspan="2">&nbsp;</td>
                                 </tr>
                             </tbody>
                         </table>

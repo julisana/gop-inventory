@@ -49,7 +49,6 @@ class DB
      * @var PDOStatement
      */
     protected $previousQuery;
-
     /**
      * @var array
      */
@@ -74,6 +73,10 @@ class DB
      * @var array
      */
     protected $duplicateKey;
+    /**
+     * @var array
+     */
+    protected $values;
 
     /**
      * DB constructor.
@@ -105,11 +108,13 @@ class DB
             ->orderBy()
             ->onDuplicateKeyUpdate();
 
+        $this->values = [];
+
         return $this;
     }
 
     /**
-     * @param $table
+     * @param string $table
      *
      * @return $this
      */
@@ -138,6 +143,18 @@ class DB
         }
 
         $this->fields = $fields;
+
+        return $this;
+    }
+
+    /**
+     * @param string|int $value
+     *
+     * @return $this
+     */
+    protected function addValue( $value )
+    {
+        $this->values[] = $value;
 
         return $this;
     }
@@ -243,20 +260,15 @@ class DB
      * Perform a MySQL Query
      *
      * @param string $statement
-     * @param array  $options
      *
      * @return PDOStatement|bool
      */
-    protected function query( $statement, $options = [] )
+    protected function query( $statement )
     {
         try {
             $query = $this->connection->prepare( $statement );
 
-            foreach ( $options as $key => $value ) {
-                $query->bindParam( $key, $value );
-            }
-
-            if ( $query->execute() ) {
+            if ( $query->execute( $this->values ) ) {
                 return $query;
             }
         } catch ( Exception $exception ) {
@@ -288,6 +300,7 @@ class DB
      * Perform an INSERT query against the MySQL database
      *
      * @param bool $ignore
+     *
      * @return bool|PDOStatement
      *
      * @throws Exception
@@ -331,7 +344,9 @@ class DB
         $query .= ' VALUES (';
         $last = end( $keys );
         foreach ( $this->fields as $field => $value ) {
-            $query .= ' "' . $value . '"';
+            $query .= ' ?';
+            $this->addValue( $value );
+
             if ( $field != $last ) {
                 $query .= ',';
             }
@@ -345,7 +360,8 @@ class DB
             $keys = array_keys( $this->duplicateKey );
             $last = end( $keys );
             foreach ( $this->duplicateKey as $key => $value ) {
-                $query .= ' ' . $key . '=' . '"' . $value . '"';
+                $query .= ' ' . $key . '=' . '?';
+                $this->addValue( $value );
 
                 if ( $key != $last ) {
                     $query .= ',';
@@ -415,7 +431,9 @@ class DB
         $keys = array_keys( $this->fields );
         $last = end( $keys );
         foreach ( $this->fields as $field => $value ) {
-            $query .= ' ' . $field . '="' . $value . '"';
+            $query .= ' ' . $field . '=?';
+            $this->addValue( $value );
+
             if ( $field != $last ) {
                 $query .= ',';
             }
@@ -472,7 +490,8 @@ class DB
         $keys = array_keys( $this->where );
         $last = end( $keys );
         foreach ( $this->where as $field => $value ) {
-            $query .= ' ' . $field . '="' . $value . '"';
+            $query .= ' ' . $field . '=?';
+            $this->addValue( $value );
 
             if ( $field != $last ) {
                 $query .= ' and';

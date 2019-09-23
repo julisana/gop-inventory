@@ -34,7 +34,7 @@ if ( isset( $costCodes ) ) {
         <div class="form-group">
             <input class="form-control form-control-sm line pl-1 pr-1"
                    type="number" name="inventory[<?php echo $index; ?>][line_number]"
-                   value="<?php echo $row[ 'line_number' ]; ?>" />
+                   value="<?php echo $row[ 'line_number' ]; ?>" min="1" required />
             <?php if ( isset( $row[ 'id' ] ) ) { ?>
                 <input type="hidden" class="id" name="inventory[<?php echo $index; ?>][id]"
                        value="<?php echo $row[ 'id' ]; ?>" />
@@ -55,12 +55,11 @@ if ( isset( $costCodes ) ) {
     <div class="col-md-1 pl-1 pr-1">
         <div class="form-group">
             <select class="form-control form-control-sm manufacturer pl-1 pr-1"
-                    name="inventory[<?php echo $index; ?>][manufacturer]"
-                   >
+                    name="inventory[<?php echo $index; ?>][manufacturer]" required>
                 <option <?php echo $row[ 'manufacturer' ] == '' ? 'selected' : ''; ?> value="">Select One
                 </option>
                 <?php foreach ( $manufacturers as $key => $value ) {
-                    echo '<option value="' . $key . '"' . ( $row[ 'manufacturer' ] == $key ? ' selected' : '' ) . '>' . $value . '</option>' . "\n";
+                    echo '<option value="' . $key . '" ' . ( $row[ 'manufacturer' ] == $key ? 'selected' : '' ) . '>' . $value . '</option>' . "\n";
                 } ?>
             </select>
         </div>
@@ -69,21 +68,21 @@ if ( isset( $costCodes ) ) {
         <div class="form-group">
             <input class="form-control form-control-sm product-id pl-1 pr-1"
                    type="text" name="inventory[<?php echo $index; ?>][product_id]"
-                   value="<?php echo $row[ 'product_id' ]; ?>" />
+                   value="<?php echo $row[ 'product_id' ]; ?>" required />
         </div>
     </div>
     <div class="col-md-2 pl-1 pr-1">
         <div class="form-group">
             <input class="form-control form-control-sm product-description pl-1 pr-1"
                    type="text" name="inventory[<?php echo $index; ?>][product_description]"
-                   value="<?php echo $row[ 'product_description' ]; ?>" />
+                   value="<?php echo $row[ 'product_description' ]; ?>" required />
         </div>
     </div>
     <div class="col-md-1 pl-1 pr-1">
         <div class="form-group">
             <input class="form-control form-control-sm quantity pl-1 pr-1"
                    type="number" name="inventory[<?php echo $index; ?>][quantity]"
-                   value="<?php echo $row[ 'quantity' ]; ?>" />
+                   value="<?php echo $row[ 'quantity' ]; ?>" required />
         </div>
     </div>
     <div class="col-md-1 pl-1 pr-1">

@@ -98,7 +98,7 @@ $keyers = get_keyers( $year, $db );
                         <div class="col-md-2 offset-md-3">
                             <div class="form-group">
                                 <label for="location">Location</label>
-                                <input type="text" class="form-control" id="location" name="location" value="" />
+                                <input type="text" class="form-control" id="location" name="location" value="" required />
                                 <input type="hidden" name="year" value="<?php echo $year ?>" />
                             </div>
                         </div>

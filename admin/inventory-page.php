@@ -41,6 +41,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         'location' => $_REQUEST[ 'location' ],
         'year' => $year,
         'keyer' => $keyer,
+        'page' => $page,
     ];
 
     $error = false;
