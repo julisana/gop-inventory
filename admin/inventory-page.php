@@ -40,8 +40,8 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
     $shared = [
         'location' => $_REQUEST[ 'location' ],
         'year' => $year,
-        'keyer' => $keyer,
         'page' => $page,
+        'keyer' => $keyer,
     ];
 
     $error = false;
@@ -182,7 +182,6 @@ $costCodes = get_cost_codes( $year, $db );
                                     <select class="form-control" id="keyer" name="keyer" required>
                                         <option value="">Select One</option>
                                         <?php foreach ( $keyers as $key => $value ) { ?>
-                                            <!--echo '<option value="' . $key . '"' . ( $keyer == $key ? ' selected' : '' ) . '>' . $value . '</option>' . "\n";-->
                                             <option value="<?php echo $key; ?>" <?php echo ( $first[ 'keyer' ] == $key ) ? 'selected' : ''; ?>><?php echo $value; ?></option>
                                         <?php } ?>
                                     </select>

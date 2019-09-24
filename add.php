@@ -16,7 +16,22 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
     $year = $_REQUEST[ 'year' ];
 }
 
+$page = false;
+if ( isset( $_REQUEST[ 'page' ] ) ) {
+    $page = $_REQUEST[ 'page' ];
+}
+
+$pages = get_pages( $year, $db );
+
 if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
+    if ( isset( $_REQUEST[ 'selectPage' ] ) && $page ) {
+        redirect( 'add.php?year=' . $year . '&page=' . $page );
+        die;
+    }
+    else if ( isset( $_REQUEST[ 'selectPage' ] ) && !$page ) {
+        redirect( 'inventory-page.php?year=' . $year . '&error=ERRORPAGENOTFOUND' );
+    }
+
     $inventory = new InventoryItem();
     $shared = [
         'location' => $_REQUEST[ 'location' ],
@@ -25,8 +40,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         'keyer' => $_REQUEST[ 'keyer' ],
     ];
 
-    $pages = get_pages( $year, $db );
-    if ( isset( $pages[ $shared[ 'page' ] ] ) ) {
+    if ( !$page && isset( $pages[ $shared[ 'page' ] ] ) ) {
         redirect( 'add.php?year=' . $year . '&error=ERRORPAGEEXISTS' );
         die;
     }
@@ -35,10 +49,20 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         $inventoryItem = array_merge( $inventoryItem, $shared );
 
         try {
-            $inventory->setDB( $db )->create( $inventoryItem );
+            $inventory->setDB( $db )->saveOrCreate( $inventoryItem );
         }
         catch ( Exception $exception ) {
             redirect( 'add.php?year=' . $year . '&error=ERRORSAVE' );
+        }
+    }
+
+    if ( !empty( $_REQUEST[ 'deleteIds' ] ) ) {
+        try {
+            foreach ( explode( ',', $_REQUEST[ 'deleteIds' ] ) as $deleteId ) {
+                $inventory->setDb( $db )->delete( $deleteId, $year );
+            }
+        } catch ( Exception $e ) {
+            redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&error=ERRORUPDATE' );
         }
     }
 
@@ -56,6 +80,13 @@ if ( isset( $_REQUEST[ 'error' ] ) ) {
 
 $manufacturers = get_manufacturers( $year, $db );
 $keyers = get_keyers( $year, $db );
+
+if ( $page ) {
+    $items = get_inventory_items( $year, $page, '', $db );
+
+    $keys = array_keys( $items );
+    $first = $items[ $keys[ 0 ] ];
+}
 
 ?>
 
@@ -84,8 +115,36 @@ $keyers = get_keyers( $year, $db );
                     <div class="col-md-4 text-center">
                         <h2>Inventory <?php echo $year; ?> - Add Page</h2>
                     </div>
-                    <div class="col-md-4 text-right">
-                        <a href="index.php" class="btn btn-success">Home</a>
+                    <div class="col-md-4 text-right side-nav">
+                        <a href="index.php" class="btn btn-success">Home</a><br />
+                        <?php if ( !empty( $pages ) ) { ?>
+                            <form action="add.php" method="post"
+                                  class="form-inline d-flex justify-content-end">
+                                <input type="hidden" name="year" value="<?php echo $year; ?>" />
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">Select Page:</label>
+                                    </div>
+                                    <select name="page" class="custom-select form-control">
+                                        <option value="">Select One</option>
+                                        <?php foreach ( $pages as $pageNumber => $keyerId ) {
+                                            $name = 'Name Unknown';
+                                            if ( isset( $keyers[ $keyerId ] ) ) {
+                                                $name = $keyers[ $keyerId ];
+                                            }
+                                            ?>
+
+                                            <option value="<?php echo $pageNumber; ?>"<?php echo $pageNumber == $page ? ' selected' : '' ?>><?php echo $pageNumber . ', ' . $name ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <input type="hidden" name="year" value="<?php echo $year; ?>" />
+                                    <input type="hidden" name="selectPage" value />
+                                    <div class="input-group-append">
+                                        <input type="submit" class="form-control btn btn-primary" value="Submit" />
+                                    </div>
+                                </div>
+                            </form>
+                        <?php } ?>
                     </div>
                 </div>
 
@@ -98,14 +157,14 @@ $keyers = get_keyers( $year, $db );
                         <div class="col-md-2 offset-md-3">
                             <div class="form-group">
                                 <label for="location">Location</label>
-                                <input type="text" class="form-control" id="location" name="location" value="" required />
+                                <input type="text" class="form-control" id="location" name="location" value="<?php echo $page ? $first[ 'location' ] : ''; ?>" required />
                                 <input type="hidden" name="year" value="<?php echo $year ?>" />
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="page">Page Number</label>
-                                <input type="number" class="form-control" id="page" name="page" value="" required />
+                                <input type="number" class="form-control" id="page" name="page" value="<?php echo $page ? $first[ 'page' ] : ''; ?>" required />
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -113,9 +172,9 @@ $keyers = get_keyers( $year, $db );
                                 <label for="keyer">Keyer</label>
                                 <select class="form-control" id="keyer" name="keyer" required>
                                     <option value="">Select One</option>
-                                    <?php foreach ( $keyers as $key => $value ) {
-                                        echo '<option value="' . $key . '">' . $value . '</option>' . "\n";
-                                    } ?>
+                                    <?php foreach ( $keyers as $key => $value ) { ?>
+                                        <option value="<?php echo $key; ?>" <?php echo ( $page && $first[ 'keyer' ] == $key ) ? 'selected' : ''; ?>><?php echo $value; ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -128,12 +187,23 @@ $keyers = get_keyers( $year, $db );
                     </div>
 
                     <div class="inventory-items">
-                        <?php include( 'inventory-row.php' ); ?>
+                        <?php
+                        if ( $page ) {
+                            foreach ( $items as $row ) {
+                                include( 'inventory-row.php' );
+                            }
+                        }
+                        else {
+                            include( 'inventory-row.php' );
+                        }
+                        ?>
                     </div>
 
                     <br />
 
                     <div class="row">
+                        <input type="hidden" name="deleteIds" id="delete" value="" />
+
                         <div class="col-md-2">
                             <input type="submit" class="form-control btn btn-success" name="save_new"
                                    value="Save and New Page" />
@@ -150,6 +220,7 @@ $keyers = get_keyers( $year, $db );
 
         <script type="text/javascript" src="scripts/app.js"></script>
         <script type="text/javascript">
+            //Remove the line and record the ID in the delete input
             $(document).on('click', '.remove-item', function () {
                 removeRow(this, 'inventory-item');
                 renameRows('inventory-items');
@@ -157,7 +228,6 @@ $keyers = get_keyers( $year, $db );
 
             //Generate a new line
             $('.inventory-items').on('keydown', '.sell-price', function (event) {
-                console.log('keyup');
                 if (event.key === 'Tab' && $(this).prop('name') === $('.sell-price').last().prop('name')) {
                     $('.inventory-items').append(addRow('inventory-item'));
                     renameRows('inventory-items');
