@@ -69,17 +69,15 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                                 <?php } ?>
 
                                 <?php
-                                if ( count( $years ) > 1 ) {
-                                    echo '<tr>';
-                                    foreach ( $years as $year ) {
-                                        if ( $year == date( 'Y' ) ) {
-                                            continue;
-                                        }
-
-                                        echo '<td class="text-center"><a href="page-number.php?year=' . $year . '">' . $year . '</a></td>';
-                                        echo '<td class="text-center"><a href="count-sheet-verification.php?year=' . $year . '">' . $year . '</a></td>';
-                                        echo '<td class="text-center"><a href="inventory-valuation.php?year=' . $year . '">' . $year . '</a></td>';
+                                foreach ( $years as $year ) {
+                                    if ( $year == date( 'Y' ) ) {
+                                        continue;
                                     }
+
+                                    echo '<tr>';
+                                    echo '<td class="text-center"><a href="page-number.php?year=' . $year . '">' . $year . '</a></td>';
+                                    echo '<td class="text-center"><a href="count-sheet-verification.php?year=' . $year . '">' . $year . '</a></td>';
+                                    echo '<td class="text-center"><a href="inventory-valuation.php?year=' . $year . '">' . $year . '</a></td>';
                                     echo '</tr>';
                                 }
                                 ?>

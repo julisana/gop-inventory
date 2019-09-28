@@ -78,18 +78,16 @@ if ( isset( $_REQUEST[ 'year' ] ) ) {
                                 <?php } ?>
 
                                 <?php
-                                if ( count( $years ) > 1 ) {
-                                    echo '<tr>';
-                                    foreach ( $years as $year ) {
-                                        if ( $year == date( 'Y' ) ) {
-                                            continue;
-                                        }
-
-                                        echo '<td class="text-center"><a href="inventory-page.php?year=' . $year . '">' . $year . '</a></td>';
-                                        echo '<td class="text-center"><a href="keyers-list.php?year=' . $year . '">' . $year . '</a></td>';
-                                        echo '<td class="text-center"><a href="manufacturers-list.php?year=' . $year . '">' . $year . '</a></td>';
-                                        echo '<td class="text-center"><a href="cost-code-list.php?year=' . $year . '">' . $year . '</a></td>';
+                                foreach ( $years as $year ) {
+                                    if ( $year == date( 'Y' ) ) {
+                                        continue;
                                     }
+
+                                    echo '<tr>';
+                                    echo '<td class="text-center"><a href="inventory-page.php?year=' . $year . '">' . $year . '</a></td>';
+                                    echo '<td class="text-center"><a href="keyers-list.php?year=' . $year . '">' . $year . '</a></td>';
+                                    echo '<td class="text-center"><a href="manufacturers-list.php?year=' . $year . '">' . $year . '</a></td>';
+                                    echo '<td class="text-center"><a href="cost-code-list.php?year=' . $year . '">' . $year . '</a></td>';
                                     echo '</tr>';
                                 }
                                 ?>

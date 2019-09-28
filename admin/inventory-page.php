@@ -99,11 +99,12 @@ $costCodes = get_cost_codes( $year, $db );
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css"
               href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css"
+              href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" href="../styles/app.css" />
 
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
                 crossorigin="anonymous"></script>
     </head>
@@ -164,6 +165,7 @@ $costCodes = get_cost_codes( $year, $db );
                             <div class="offset-md-3 col-md-2">
                                 <div class="form-group">
                                     <label for="page">Page Number</label>
+                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Page Number" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
                                     <input type="number" class="form-control" id="page" name="page"
                                            value="<?php echo $page; ?>" disabled />
                                 </div>
@@ -171,6 +173,7 @@ $costCodes = get_cost_codes( $year, $db );
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="location">Location</label>
+                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Location" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
                                     <input type="text" class="form-control" id="location" name="location"
                                            value="<?php echo $first[ 'location' ]; ?>" />
                                     <input type="hidden" name="year" value="<?php echo $year; ?>" />
@@ -179,6 +182,7 @@ $costCodes = get_cost_codes( $year, $db );
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="keyer">Keyer</label>
+                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Keyer" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
                                     <select class="form-control" id="keyer" name="keyer" required>
                                         <option value="">Select One</option>
                                         <?php foreach ( $keyers as $key => $value ) { ?>
@@ -219,6 +223,11 @@ $costCodes = get_cost_codes( $year, $db );
 
         <script type="text/javascript" src="../scripts/app.js"></script>
         <script type="text/javascript">
+            //Enable all popovers on the page
+            $(function () {
+                $('[data-toggle="popover"]').popover();
+            });
+
             //Remove the line and record the ID in the delete input
             $(document).on('click', '.remove-item', function () {
                 removeRow(this, 'inventory-item');
