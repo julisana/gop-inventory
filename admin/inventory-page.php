@@ -165,7 +165,9 @@ $costCodes = get_cost_codes( $year, $db );
                             <div class="offset-md-3 col-md-2">
                                 <div class="form-group">
                                     <label for="page">Page Number</label>
-                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Page Number" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Page Number" data-content="The current page being edited. This field can no longer be altered.">
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                    </span>
                                     <input type="number" class="form-control" id="page" name="page"
                                            value="<?php echo $page; ?>" disabled />
                                 </div>
@@ -173,7 +175,9 @@ $costCodes = get_cost_codes( $year, $db );
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="location">Location</label>
-                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Location" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Location" data-content="Please list the location of the page you're working on. Example: Server Room">
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                    </span>
                                     <input type="text" class="form-control" id="location" name="location"
                                            value="<?php echo $first[ 'location' ]; ?>" />
                                     <input type="hidden" name="year" value="<?php echo $year; ?>" />
@@ -182,7 +186,9 @@ $costCodes = get_cost_codes( $year, $db );
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="keyer">Keyer</label>
-                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Keyer" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                                    <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Keyer" data-content="Select the keyer's name. If they keyer's name isn't listed, you will need to add it from the Admin Home area.">
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                    </span>
                                     <select class="form-control" id="keyer" name="keyer" required>
                                         <option value="">Select One</option>
                                         <?php foreach ( $keyers as $key => $value ) { ?>

@@ -158,7 +158,9 @@ if ( $page ) {
                         <div class="col-md-2 offset-md-3">
                             <div class="form-group">
                                 <label for="location">Location</label>
-                                <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Location" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                                <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Location" data-content="Please list the location of the page you're working on. Example: Server Room">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                </span>
                                 <input type="text" class="form-control" id="location" name="location" value="<?php echo $page ? $first[ 'location' ] : ''; ?>" required />
                                 <input type="hidden" name="year" value="<?php echo $year ?>" />
                             </div>
@@ -166,14 +168,18 @@ if ( $page ) {
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="page">Page Number</label>
-                                <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Page Number" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                                <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Page Number" data-content="Enter the page number you're working on. Example: 0001">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                </span>
                                 <input type="number" class="form-control" id="page" name="page" value="<?php echo $page ? $first[ 'page' ] : ''; ?>" required />
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="keyer">Keyer</label>
-                                <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Keyer" data-content="CONTENT"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                                <span class="text-primary" data-toggle="popover" data-trigger="hover" title="Keyer" data-content="Select your name as the keyer. If your name isn't listed, ask an admin to have it added.">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                </span>
                                 <select class="form-control" id="keyer" name="keyer" required>
                                     <option value="">Select One</option>
                                     <?php foreach ( $keyers as $key => $value ) { ?>
