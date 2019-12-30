@@ -31,9 +31,9 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         $codeItem = array_merge( $codeItem, $shared );
 
         try {
-            $costCode->setDB( $db )->save( $codeItem );
+            $costCode->setDB( $db )->saveOrCreate( $codeItem );
         } catch ( Exception $e ) {
-            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORUPDATE' );
+            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORUPDATE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 
@@ -44,7 +44,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
                 $costCode->setDb( $db )->delete( $deleteId, $year );
             }
         } catch ( Exception $e ) {
-            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORUPDATE' );
+            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORUPDATE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 
