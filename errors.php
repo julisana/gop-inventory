@@ -3,7 +3,7 @@
         <?php
             echo get_error( $error );
             if ( isset( $_REQUEST[ 'error_message' ] ) && !empty( $_REQUEST[ 'error_message' ] ) ) {
-                echo ' ' . $_REQUEST[ 'error_message' ];
+                echo ' ' . urldecode( $_REQUEST[ 'error_message' ] );
             }
         ?>
 
