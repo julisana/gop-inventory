@@ -33,7 +33,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         try {
             $costCode->setDB( $db )->saveOrCreate( $codeItem );
         } catch ( Exception $e ) {
-            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORUPDATE&error_message=' . urlencode( $e->getMessage() ) );
+            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORSAVE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 
@@ -44,7 +44,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
                 $costCode->setDb( $db )->delete( $deleteId, $year );
             }
         } catch ( Exception $e ) {
-            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORUPDATE&error_message=' . urlencode( $e->getMessage() ) );
+            redirect( 'cost-code-list.php?year=' . $year . '&error=ERRORDELETE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 

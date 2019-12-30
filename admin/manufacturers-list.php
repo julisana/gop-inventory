@@ -34,7 +34,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         try {
             $manufacturer->setDB( $db )->saveOrCreate( $manufacturerItem );
         } catch ( Exception $e ) {
-            redirect( 'manufacturers-list.php?year=' . $year . '&error=ERRORUPDATE&error_message=' . urlencode( $e->getMessage() ) );
+            redirect( 'manufacturers-list.php?year=' . $year . '&error=ERRORSAVE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 
@@ -45,7 +45,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
                 $manufacturer->setDb( $db )->delete( $deleteId, $year );
             }
         } catch ( Exception $e ) {
-            redirect( 'manufacturers-list.php?year=' . $year . '&error=ERRORUPDATE&error_message=' . urlencode( $e->getMessage() ) );
+            redirect( 'manufacturers-list.php?year=' . $year . '&error=ERRORDELETE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 

@@ -33,7 +33,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         try {
             $keyer->setDB( $db )->saveOrCreate( $keyerItem );
         } catch ( Exception $e ) {
-            redirect( 'keyers-list.php?year=' . $year . '&error=ERRORUPDATE&error_message=' . urlencode( $e->getMessage() ) );
+            redirect( 'keyers-list.php?year=' . $year . '&error=ERRORSAVE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 
@@ -44,7 +44,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
                 $keyer->setDb( $db )->delete( $deleteId, $year );
             }
         } catch ( Exception $e ) {
-            redirect( 'keyers-list.php?year=' . $year . '&error=ERRORUPDATE&error_message=' . urlencode( $e->getMessage() ) );
+            redirect( 'keyers-list.php?year=' . $year . '&error=ERRORDELETE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 

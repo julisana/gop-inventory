@@ -51,8 +51,8 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
         try {
             $inventory->setDB( $db )->saveOrCreate( $inventoryItem );
         }
-        catch ( Exception $exception ) {
-            redirect( 'add.php?year=' . $year . '&error=ERRORSAVE' );
+        catch ( Exception $e ) {
+            redirect( 'add.php?year=' . $year . '&error=ERRORSAVE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 
@@ -62,7 +62,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
                 $inventory->setDb( $db )->delete( $deleteId, $year );
             }
         } catch ( Exception $e ) {
-            redirect( 'inventory-page.php?year=' . $year . '&page=' . $page . '&error=ERRORUPDATE' );
+            redirect( 'add.php?year=' . $year . '&page=' . $page . '&error=ERRORDELETE&error_message=' . urlencode( $e->getMessage() ) );
         }
     }
 

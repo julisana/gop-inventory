@@ -31,13 +31,10 @@ if ( !function_exists( 'get_error' ) ) {
     {
         switch ( $errorCode ) {
             case 'ERRORSAVE':
-                $error = 'There was a problem adding the record(s)';
+                $error = 'There was a problem adding or updating the record(s)';
             break;
-            case 'ERRORUPDATE':
-                $error = 'There was a problem updating the record(s).';
-            break;
-            case 'ERRORNOID':
-                $error = 'One or more records could not be updated.';
+            case 'ERRORDELETE':
+                $error = 'There was a problem deleting the record(s).';
             break;
             case 'ERRORPAGEEXISTS':
                 $error = 'The page already exists.';
